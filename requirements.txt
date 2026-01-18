@@ -1,0 +1,9 @@
+# Python 3.8+ required
+# Most dependencies are built-in to Python standard library
+
+# No external dependencies required for core functionality
+# tkinter is included with Python on most platforms
+# subprocess is part of standard library
+
+# Optional: for better SGF parsing (if needed later)
+sgfmill>=1.1.1

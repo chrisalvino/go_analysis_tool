@@ -1,0 +1,17 @@
+{
+  "katago": {
+    "executable_path": "/opt/homebrew/bin/katago",
+    "config_path": "katago_data/katago_config.cfg",
+    "model_path": "/opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz",
+    "max_visits": 200
+  },
+  "analysis": {
+    "error_threshold": 3.0,
+    "top_moves_count": 5
+  },
+  "ui": {
+    "board_size": 19,
+    "cell_size": 35,
+    "margin": 25
+  }
+}
