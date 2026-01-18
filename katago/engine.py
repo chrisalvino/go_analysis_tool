@@ -25,6 +25,7 @@ class KataGoEngine:
         self.output_queue: Queue = Queue()
         self.reader_thread: Optional[threading.Thread] = None
         self.running = False
+        self.next_player = 'B'  # Track whose turn it is
 
     def start(self) -> bool:
         """Start the KataGo engine.
@@ -156,6 +157,7 @@ class KataGoEngine:
         """
         self.send_command('clear_board')
         response = self.get_response()
+        self.next_player = 'B'  # Reset to black after clearing
         return response is not None and response.startswith('=')
 
     def play_move(self, color: str, move: str) -> bool:
@@ -170,10 +172,14 @@ class KataGoEngine:
         """
         self.send_command(f'play {color} {move}')
         response = self.get_response()
-        return response is not None and response.startswith('=')
+        # Switch player
+        if response is not None and response.startswith('='):
+            self.next_player = 'W' if color == 'B' else 'B'
+            return True
+        return False
 
     def analyze_position(self, max_visits: int = 200) -> Optional[Dict[str, Any]]:
-        """Analyze the current position using kata-analyze.
+        """Analyze the current position using lz-genmove_analyze.
 
         Args:
             max_visits: Maximum number of visits for analysis
@@ -181,37 +187,92 @@ class KataGoEngine:
         Returns:
             Analysis results as dict, or None if failed
         """
-        # Use kata-analyze command
-        command = f'kata-analyze interval 1000 maxVisits {max_visits}'
+        # Use lz-genmove_analyze command: lz-genmove_analyze PLAYER maxVisits
+        command = f'lz-genmove_analyze {self.next_player} {max_visits}'
         self.send_command(command)
 
         # Wait for analysis result
         try:
-            response_lines = []
+            move_infos = []
             while True:
                 line = self.output_queue.get(timeout=30.0)
 
                 if not line:
                     continue
 
-                # kata-analyze returns JSON on info lines
-                if line.startswith('info'):
-                    # Extract JSON from info line
-                    json_start = line.find('info move')
-                    if json_start != -1:
-                        json_str = line[json_start + 10:].strip()
-                        try:
-                            data = json.loads(json_str)
-                            # Stop analysis
-                            self.send_command('kata-analyze-stop')
-                            return data
-                        except json.JSONDecodeError:
-                            continue
+                # Check for final result line starting with "play"
+                if line.startswith('play '):
+                    # Return collected move data
+                    return {'moveInfos': move_infos}
+
+                # Parse info lines
+                if line.startswith('info move '):
+                    # Parse key-value pairs from the info line
+                    # Format: info move Q16 visits 166 winrate 6310 prior 4995 lcb 6279 order 0 pv Q16 Q4 ...
+                    move_data = self._parse_info_line(line)
+                    if move_data:
+                        move_infos.append(move_data)
 
         except Empty:
+            print("Warning: Timeout waiting for KataGo analysis response")
             return None
 
         return None
+
+    def _parse_info_line(self, line: str) -> Optional[Dict[str, Any]]:
+        """Parse an info line from lz-genmove_analyze.
+
+        Args:
+            line: Info line like "info move Q16 visits 166 winrate 6310 ..."
+
+        Returns:
+            Dictionary with move data or None if parse fails
+        """
+        try:
+            parts = line.split()
+            if len(parts) < 4 or parts[0] != 'info' or parts[1] != 'move':
+                return None
+
+            move_str = parts[2]
+            data = {'move': move_str}
+
+            # Parse key-value pairs
+            i = 3
+            while i < len(parts):
+                key = parts[i]
+                if i + 1 < len(parts):
+                    value_str = parts[i + 1]
+
+                    # Handle special keys
+                    if key == 'pv':
+                        # PV is the rest of the line
+                        data['pv'] = ' '.join(parts[i + 1:])
+                        break
+                    elif key in ['visits', 'order']:
+                        data[key] = int(value_str)
+                    elif key in ['winrate', 'prior', 'lcb']:
+                        # These are in units of 0.0001 (10000 = 1.0 = 100%)
+                        data[key] = float(value_str) / 10000.0
+                    else:
+                        data[key] = value_str
+
+                    i += 2
+                else:
+                    i += 1
+
+            # Calculate scoreLead from winrate (rough approximation)
+            # KataGo's winrate is already percentage-like
+            if 'winrate' in data:
+                # Simple approximation: winrate of 0.60 = ~10 point lead
+                wr = data['winrate']
+                # Convert winrate (0.5 = even) to approximate score
+                data['scoreLead'] = (wr - 0.5) * 40.0  # Rough approximation
+
+            return data
+
+        except Exception as e:
+            print(f"Warning: Error parsing KataGo info line: {e}")
+            return None
 
     @staticmethod
     def coords_to_gtp(row: int, col: int) -> str:

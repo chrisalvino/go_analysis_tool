@@ -6,7 +6,7 @@
     "max_visits": 200
   },
   "analysis": {
-    "error_threshold": 3.0,
+    "error_threshold": 7.0,
     "top_moves_count": 5,
     "analysis_threads": 3
   },

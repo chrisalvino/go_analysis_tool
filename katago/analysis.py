@@ -119,6 +119,7 @@ class GameAnalyzer:
             )
         else:
             # Parallel analysis (multi-threaded)
+            print(f"Using {self.num_threads} parallel analysis threads")
             return self._analyze_parallel(
                 main_line, board_size, max_visits, progress_callback,
                 katago_path, config_path, model_path
@@ -362,8 +363,8 @@ class GameAnalyzer:
         """
         # Set up board to the position
         board_size = game_tree.board_size
-        self.engine.set_board_size(board_size)
-        self.engine.clear_board()
+        self.primary_engine.set_board_size(board_size)
+        self.primary_engine.clear_board()
 
         # Play moves up to the position
         game_tree.go_to_root()
@@ -375,14 +376,14 @@ class GameAnalyzer:
 
             if node.is_pass:
                 color = 'B' if node.color == Stone.BLACK else 'W'
-                self.engine.play_move(color, 'pass')
+                self.primary_engine.play_move(color, 'pass')
             elif node.move:
                 color = 'B' if node.color == Stone.BLACK else 'W'
                 gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1])
-                self.engine.play_move(color, gtp_move)
+                self.primary_engine.play_move(color, gtp_move)
 
         # Analyze position
-        analysis_data = self.engine.analyze_position(max_visits)
+        analysis_data = self.primary_engine.analyze_position(max_visits)
 
         if analysis_data is None:
             return None
