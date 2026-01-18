@@ -91,3 +91,6 @@ rules = tromp-taylor
 2026-01-18 10:44:56-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
 2026-01-18 10:44:56-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
 2026-01-18 10:44:56-0800: GTP ready, beginning main protocol loop
+2026-01-18 11:04:10-0800: Quit requested by controller
+2026-01-18 11:04:10-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-18 11:04:10-0800: All cleaned up, quitting

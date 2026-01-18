@@ -147,11 +147,13 @@ class GoAnalysisTool(tk.Tk):
                 )
 
                 if self.katago_engine.start():
+                    num_threads = self.app_config.get_analysis_threads()
                     self.analyzer = GameAnalyzer(
                         self.katago_engine,
-                        self.app_config.get_error_threshold()
+                        self.app_config.get_error_threshold(),
+                        num_threads
                     )
-                    print("KataGo initialized successfully")
+                    print(f"KataGo initialized successfully (analysis threads: {num_threads})")
                 else:
                     print("Failed to start KataGo")
                     self.katago_engine = None
@@ -527,7 +529,11 @@ class GoAnalysisTool(tk.Tk):
                 results = self.analyzer.analyze_game(
                     self.game_tree,
                     self.app_config.get_max_visits(),
-                    progress_callback
+                    progress_callback,
+                    # Pass KataGo paths for parallel engine creation
+                    self.app_config.get_katago_executable(),
+                    self.app_config.get_katago_config(),
+                    self.app_config.get_katago_model()
                 )
 
                 self.analysis_results = results
@@ -540,10 +546,10 @@ class GoAnalysisTool(tk.Tk):
                 self.after(0, lambda: self.analysis_panel.display_errors(errors))
                 self.after(0, lambda: self._highlight_errors(errors))
 
-                messagebox.showinfo("Analysis Complete", f"Found {len(errors)} errors")
+                self.after(0, lambda: messagebox.showinfo("Analysis Complete", f"Found {len(errors)} errors"))
 
             except Exception as e:
-                messagebox.showerror("Error", f"Analysis failed: {e}")
+                self.after(0, lambda: messagebox.showerror("Error", f"Analysis failed: {e}"))
 
             finally:
                 self.is_analyzing = False
@@ -607,6 +613,11 @@ class GoAnalysisTool(tk.Tk):
 
     def destroy(self) -> None:
         """Clean up resources."""
+        # Clean up analyzer engine pool
+        if self.analyzer:
+            self.analyzer._cleanup_engine_pool()
+
+        # Stop primary engine
         if self.katago_engine:
             self.katago_engine.stop()
 

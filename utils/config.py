@@ -17,7 +17,8 @@ class Config:
         },
         'analysis': {
             'error_threshold': 3.0,
-            'top_moves_count': 5
+            'top_moves_count': 5,
+            'analysis_threads': 3  # Number of parallel analysis threads
         },
         'ui': {
             'board_size': 19,
@@ -135,6 +136,16 @@ class Config:
             Error threshold in points
         """
         return self.get('analysis', 'error_threshold', 3.0)
+
+    def get_analysis_threads(self) -> int:
+        """Get number of parallel analysis threads.
+
+        Returns:
+            Number of threads (1-8)
+        """
+        threads = self.get('analysis', 'analysis_threads', 3)
+        # Clamp between 1 and 8
+        return max(1, min(8, threads))
 
     def is_katago_configured(self) -> bool:
         """Check if KataGo is properly configured.

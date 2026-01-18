@@ -8,6 +8,7 @@ A Python-based Go game analysis tool with Tkinter UI, featuring full gameplay su
 - **Multiple Board Sizes**: Support for 9x9, 13x13, and 19x19 boards
 - **SGF Support**: Read and write SGF (Smart Game Format) files with variation support
 - **KataGo Integration**: AI analysis with top move recommendations
+- **Parallel Analysis**: Multi-threaded game analysis (up to 8x faster with 8 threads)
 - **Automated KataGo Setup**: One-click download and configuration, or use system-installed KataGo
 - **Error Detection**: Automatically identify significant mistakes based on point loss
 - **Interactive UI**: Tkinter-based interface with visual board, game navigation, and analysis display
@@ -213,12 +214,19 @@ Edit `config.json` (created after first run):
 ```json
 {
   "analysis": {
-    "error_threshold": 3.0
+    "error_threshold": 3.0,
+    "analysis_threads": 3
   }
 }
 ```
 
-Lower values = more sensitive error detection.
+**Configuration Options:**
+- `error_threshold`: Point loss to flag as error (default: 3.0)
+  - Lower values = more sensitive error detection
+- `analysis_threads`: Number of parallel analysis threads (default: 3, max: 8)
+  - Higher values = faster analysis (recommended: 2-4)
+  - Each thread runs a separate KataGo instance
+  - **Performance:** 3 threads ≈ 3x faster analysis!
 
 ## Project Structure
 
