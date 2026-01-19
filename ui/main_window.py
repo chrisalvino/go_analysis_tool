@@ -71,17 +71,31 @@ class GoAnalysisTool(tk.Tk):
         right_frame = tk.Frame(main_frame)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Mode selector
-        mode_frame = tk.Frame(right_frame)
+        # Mode selector with radio buttons
+        mode_frame = tk.LabelFrame(right_frame, text="Mode", padx=10, pady=5)
         mode_frame.pack(fill=tk.X, pady=5)
 
-        tk.Label(mode_frame, text="Mode:").pack(side=tk.LEFT, padx=5)
+        self.mode_var = tk.StringVar(value="play")
 
-        self.play_mode_btn = tk.Button(mode_frame, text="Play", command=self._set_play_mode, relief=tk.SUNKEN)
-        self.play_mode_btn.pack(side=tk.LEFT, padx=2)
+        play_radio = tk.Radiobutton(
+            mode_frame,
+            text="Play Mode",
+            variable=self.mode_var,
+            value="play",
+            command=self._set_play_mode,
+            font=("Arial", 10)
+        )
+        play_radio.pack(anchor=tk.W, pady=2)
 
-        self.analysis_mode_btn = tk.Button(mode_frame, text="Analysis", command=self._set_analysis_mode)
-        self.analysis_mode_btn.pack(side=tk.LEFT, padx=2)
+        analysis_radio = tk.Radiobutton(
+            mode_frame,
+            text="Analysis Mode",
+            variable=self.mode_var,
+            value="analysis",
+            command=self._set_analysis_mode,
+            font=("Arial", 10)
+        )
+        analysis_radio.pack(anchor=tk.W, pady=2)
 
         # Control panel
         self.control_panel = ControlPanel(right_frame)
@@ -143,7 +157,8 @@ class GoAnalysisTool(tk.Tk):
                 self.katago_engine = KataGoEngine(
                     self.app_config.get_katago_executable(),
                     self.app_config.get_katago_config(),
-                    self.app_config.get_katago_model()
+                    self.app_config.get_katago_model(),
+                    self.app_config.get_analysis_timeout()
                 )
 
                 if self.katago_engine.start():
@@ -176,6 +191,7 @@ class GoAnalysisTool(tk.Tk):
             # Update UI
             self.board_canvas.set_board(self.board)
             self.analysis_panel.board_size = size
+            self.analysis_panel.komi = self.game_tree.get_komi()
             self._update_display()
 
     def _open_sgf(self) -> None:
@@ -194,6 +210,7 @@ class GoAnalysisTool(tk.Tk):
                 # Update canvas to use new board
                 self.board_canvas.set_board(self.board)
                 self.analysis_panel.board_size = self.game_tree.board_size
+                self.analysis_panel.komi = self.game_tree.get_komi()
 
                 # Replay to current position
                 self.game_tree.go_to_root()
@@ -376,18 +393,22 @@ class GoAnalysisTool(tk.Tk):
     def _set_play_mode(self) -> None:
         """Switch to play mode."""
         self.play_mode = True
-        self.play_mode_btn.config(relief=tk.SUNKEN)
-        self.analysis_mode_btn.config(relief=tk.RAISED)
+        self.mode_var.set("play")
         self.control_panel.set_play_mode(True)
         self.board_canvas.set_preview_stone(self.current_player)
+        # Clear top move candidates and error markers in play mode
+        self.board_canvas.set_top_move_candidates([])
+        self.board_canvas.set_error_moves(set())
 
     def _set_analysis_mode(self) -> None:
         """Switch to analysis mode."""
         self.play_mode = False
-        self.play_mode_btn.config(relief=tk.RAISED)
-        self.analysis_mode_btn.config(relief=tk.SUNKEN)
+        self.mode_var.set("analysis")
         self.control_panel.set_play_mode(False)
         self.board_canvas.set_preview_stone(None)
+        # Update display to show analysis if available
+        if self.analysis_results:
+            self._display_current_analysis()
 
     def _on_board_click(self, row: int, col: int) -> None:
         """Handle board click.
@@ -508,6 +529,57 @@ class GoAnalysisTool(tk.Tk):
         variations = len(self.game_tree.get_variations())
         self.control_panel.update_variations(variations)
 
+        # In analysis mode, show top move candidates and analysis for current position
+        if not self.play_mode and self.analysis_results:
+            self._display_current_analysis()
+
+    def _display_current_analysis(self) -> None:
+        """Display analysis for the current position."""
+        current_move = self.game_tree.get_current_move_number()
+
+        # Find the analysis for this move number
+        current_analysis = None
+        for analysis in self.analysis_results:
+            if analysis.move_number == current_move:
+                current_analysis = analysis
+                break
+
+        if current_analysis and current_analysis.top_moves:
+            # Extract top 5 move candidates for board display
+            candidates = []
+            for i, move_analysis in enumerate(current_analysis.top_moves[:5]):
+                if move_analysis.move and not move_analysis.is_pass:
+                    row, col = move_analysis.move
+                    candidates.append((row, col, i))  # (row, col, rank)
+
+            # Update board canvas with candidates
+            self.board_canvas.set_top_move_candidates(candidates)
+
+            # Show error marker only if this specific move is an error
+            if current_analysis.is_error and current_analysis.played_move:
+                self.board_canvas.set_error_moves({current_analysis.played_move})
+            else:
+                self.board_canvas.set_error_moves(set())
+
+            # Determine whose turn it was when this move was played
+            # The analysis before move N shows options for the player who played move N
+            current_node = self.game_tree.current
+            if current_node.color == Stone.BLACK:
+                current_player_str = 'B'
+            elif current_node.color == Stone.WHITE:
+                current_player_str = 'W'
+            else:
+                # Root or unknown - default to Black
+                current_player_str = 'B'
+
+            # Update analysis panel with current position's analysis
+            self.analysis_panel.display_position_analysis(current_analysis, current_player_str)
+        else:
+            # Clear candidates and errors if no analysis available
+            self.board_canvas.set_top_move_candidates([])
+            self.board_canvas.set_error_moves(set())
+            self.analysis_panel.display_position_analysis(None)
+
     def _analyze_game(self) -> None:
         """Analyze the entire game."""
         if not self.analyzer:
@@ -533,7 +605,8 @@ class GoAnalysisTool(tk.Tk):
                     # Pass KataGo paths for parallel engine creation
                     self.app_config.get_katago_executable(),
                     self.app_config.get_katago_config(),
-                    self.app_config.get_katago_model()
+                    self.app_config.get_katago_model(),
+                    self.app_config.get_analysis_timeout()
                 )
 
                 self.analysis_results = results
@@ -544,7 +617,7 @@ class GoAnalysisTool(tk.Tk):
 
                 # Update UI
                 self.after(0, lambda: self.analysis_panel.display_errors(errors))
-                self.after(0, lambda: self._highlight_errors(errors))
+                # Don't highlight all errors at once - only show error for current position
 
                 self.after(0, lambda: messagebox.showinfo("Analysis Complete", f"Found {len(errors)} errors"))
 
@@ -605,11 +678,7 @@ class GoAnalysisTool(tk.Tk):
         if self.game_tree.go_to_move_number(move_num):
             self._replay_to_current()
             self._update_display()
-
-            # Show analysis for this position
-            if move_num < len(self.analysis_results):
-                analysis = self.analysis_results[move_num]
-                self.analysis_panel.display_position_analysis(analysis)
+            # Analysis display is now handled automatically by _update_display()
 
     def destroy(self) -> None:
         """Clean up resources."""

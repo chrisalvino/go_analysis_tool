@@ -20,6 +20,7 @@ class AnalysisPanel(tk.Frame):
 
         self.on_error_click: Optional[Callable[[int], None]] = None
         self.board_size = 19  # Default, will be updated
+        self.komi = 6.5  # Default komi, will be updated
 
         self._setup_ui()
 
@@ -88,11 +89,12 @@ class AnalysisPanel(tk.Frame):
         if is_analyzing:
             self.analyze_btn.config(state=tk.DISABLED)
             self.analyze_pos_btn.config(state=tk.DISABLED)
-            self.status_label.config(text="Analyzing...", fg="blue")
+            self.status_label.config(text="Starting analysis...", fg="black")
+            self.progress_var.set(0)
         else:
             self.analyze_btn.config(state=tk.NORMAL)
             self.analyze_pos_btn.config(state=tk.NORMAL)
-            self.status_label.config(text="Ready", fg="gray")
+            self.status_label.config(text="", fg="black")
             self.progress_var.set(0)
 
     def set_progress(self, current: int, total: int) -> None:
@@ -105,13 +107,14 @@ class AnalysisPanel(tk.Frame):
         if total > 0:
             progress = (current / total) * 100
             self.progress_var.set(progress)
-            self.status_label.config(text=f"Analyzing move {current}/{total}", fg="blue")
+            self.status_label.config(text=f"Move {current} of {total} ({progress:.0f}%)", fg="black")
 
-    def display_position_analysis(self, analysis: Optional[PositionAnalysis]) -> None:
+    def display_position_analysis(self, analysis: Optional[PositionAnalysis], current_player: str = 'B') -> None:
         """Display analysis for a position.
 
         Args:
             analysis: Position analysis data
+            current_player: 'B' or 'W' for current player to move
         """
         self.top_moves_text.config(state=tk.NORMAL)
         self.top_moves_text.delete(1.0, tk.END)
@@ -136,12 +139,13 @@ class AnalysisPanel(tk.Frame):
             else:
                 move_str = "?"
 
-            # Format stats
-            win_rate_pct = move.win_rate * 100
-            score_str = f"{move.score_lead:+.1f}"
+            # Format score - KataGo's score_lead already accounts for komi
+            # Positive means current player is ahead
+            score = move.score_lead
+            score_str = f"{score:+.1f}"
 
-            # Create line
-            line = f"{rank}. {move_str:5s} | WR: {win_rate_pct:5.1f}% | Score: {score_str:6s}\n"
+            # Create line showing move and score
+            line = f"{rank}. {move_str:5s} | Score: {score_str:6s}\n"
 
             # Highlight if this is the played move
             if analysis.played_move_analysis and move.move == analysis.played_move_analysis.move:
@@ -209,5 +213,5 @@ class AnalysisPanel(tk.Frame):
 
         self.error_listbox.delete(0, tk.END)
 
-        self.status_label.config(text="Ready", fg="gray")
+        self.status_label.config(text="", fg="black")
         self.progress_var.set(0)

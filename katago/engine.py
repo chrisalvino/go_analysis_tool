@@ -10,13 +10,14 @@ from queue import Queue, Empty
 class KataGoEngine:
     """Interface to KataGo engine via GTP."""
 
-    def __init__(self, katago_path: str, config_path: str, model_path: str):
+    def __init__(self, katago_path: str, config_path: str, model_path: str, analysis_timeout: int = 120):
         """Initialize KataGo engine.
 
         Args:
             katago_path: Path to KataGo executable
             config_path: Path to KataGo config file
             model_path: Path to neural network model
+            analysis_timeout: Timeout in seconds for analysis operations (default: 120)
         """
         self.katago_path = katago_path
         self.config_path = config_path
@@ -26,6 +27,7 @@ class KataGoEngine:
         self.reader_thread: Optional[threading.Thread] = None
         self.running = False
         self.next_player = 'B'  # Track whose turn it is
+        self.analysis_timeout = analysis_timeout  # Configurable timeout
 
     def start(self) -> bool:
         """Start the KataGo engine.
@@ -171,7 +173,8 @@ class KataGoEngine:
             True if successful
         """
         self.send_command(f'play {color} {move}')
-        response = self.get_response()
+        # Use longer timeout for play commands (they can be slow if engine is busy)
+        response = self.get_response(timeout=30.0)
         # Switch player
         if response is not None and response.startswith('='):
             self.next_player = 'W' if color == 'B' else 'B'
@@ -194,27 +197,52 @@ class KataGoEngine:
         # Wait for analysis result
         try:
             move_infos = []
+            line_count = 0
             while True:
-                line = self.output_queue.get(timeout=30.0)
+                line = self.output_queue.get(timeout=self.analysis_timeout)
 
                 if not line:
                     continue
 
+                line_count += 1
+
                 # Check for final result line starting with "play"
                 if line.startswith('play '):
+                    # Debug: show what we collected
+                    if line_count < 10:
+                        print(f"DEBUG: Got {len(move_infos)} move_infos from {line_count} lines")
                     # Return collected move data
                     return {'moveInfos': move_infos}
 
                 # Parse info lines
                 if line.startswith('info move '):
-                    # Parse key-value pairs from the info line
-                    # Format: info move Q16 visits 166 winrate 6310 prior 4995 lcb 6279 order 0 pv Q16 Q4 ...
-                    move_data = self._parse_info_line(line)
-                    if move_data:
-                        move_infos.append(move_data)
+                    # Debug first few
+                    if len(move_infos) < 3:
+                        print(f"DEBUG RAW: {line[:200]}")
+
+                    # IMPORTANT: Each line may contain MULTIPLE "info move" sections!
+                    # Split the line by " info move " to get all candidates
+                    # Example: "info move Q16 visits 100 ... info move D4 visits 50 ..."
+                    segments = line.split(' info move ')
+
+                    for i, segment in enumerate(segments):
+                        if not segment.strip():
+                            continue
+
+                        # Add "info move " prefix back
+                        if i == 0:
+                            # First segment starts with "info move "
+                            parse_line = segment
+                        else:
+                            # Subsequent segments need "info move " added back
+                            parse_line = 'info move ' + segment
+
+                        move_data = self._parse_info_line(parse_line)
+                        if move_data:
+                            move_infos.append(move_data)
 
         except Empty:
-            print("Warning: Timeout waiting for KataGo analysis response")
+            print(f"Warning: Timeout waiting for KataGo analysis response (timeout: {self.analysis_timeout}s)")
             return None
 
         return None
@@ -260,12 +288,12 @@ class KataGoEngine:
                 else:
                     i += 1
 
-            # Calculate scoreLead from winrate (rough approximation)
-            # KataGo's winrate is already percentage-like
+            # Calculate scoreLead from KataGo's evaluation metric (rough approximation)
+            # KataGo's evaluation is percentage-like (0.0-1.0 scale)
             if 'winrate' in data:
-                # Simple approximation: winrate of 0.60 = ~10 point lead
+                # Simple approximation: 0.60 = ~10 point lead
                 wr = data['winrate']
-                # Convert winrate (0.5 = even) to approximate score
+                # Convert evaluation (0.5 = even) to approximate score
                 data['scoreLead'] = (wr - 0.5) * 40.0  # Rough approximation
 
             return data
@@ -275,22 +303,21 @@ class KataGoEngine:
             return None
 
     @staticmethod
-    def coords_to_gtp(row: int, col: int) -> str:
+    def coords_to_gtp(row: int, col: int, board_size: int = 19) -> str:
         """Convert board coordinates to GTP format.
 
         Args:
             row: Row index (0-based)
             col: Column index (0-based)
+            board_size: Board size (9, 13, or 19)
 
         Returns:
             GTP move string (e.g., 'D4')
         """
         # Column: A-H, J-T (skip I)
         col_letter = chr(ord('A') + col if col < 8 else ord('A') + col + 1)
-        # Row: 1-19 (from bottom)
-        # Note: We need to know board size to convert properly
-        # For now, assume standard conversion
-        row_num = 19 - row  # Assuming 19x19, need to adjust based on actual size
+        # Row: 1-board_size (from bottom)
+        row_num = board_size - row
         return f'{col_letter}{row_num}'
 
     @staticmethod

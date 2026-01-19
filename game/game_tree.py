@@ -229,3 +229,15 @@ class GameTree:
     def clear_from_current(self) -> None:
         """Clear all moves after the current position."""
         self.current.children = []
+
+    def get_komi(self) -> float:
+        """Get komi from root properties.
+
+        Returns:
+            Komi value (default 6.5 if not set)
+        """
+        komi_str = self.root.properties.get('KM', '6.5')
+        try:
+            return float(komi_str)
+        except (ValueError, TypeError):
+            return 6.5

@@ -207,12 +207,16 @@ Moves are flagged as errors when they lose more than the configured threshold (d
 - As red X marks on the board
 - In the error list with move number and point loss
 
-### Customizing Error Threshold
+### Customizing Error Threshold and Analysis Settings
 
 Edit `config.json` (created after first run):
 
 ```json
 {
+  "katago": {
+    "max_visits": 200,
+    "analysis_timeout": 120
+  },
   "analysis": {
     "error_threshold": 3.0,
     "analysis_threads": 3
@@ -227,6 +231,10 @@ Edit `config.json` (created after first run):
   - Higher values = faster analysis (recommended: 2-4)
   - Each thread runs a separate KataGo instance
   - **Performance:** 3 threads ≈ 3x faster analysis!
+- `analysis_timeout`: Timeout in seconds for each position analysis (default: 120)
+  - Increase if you get timeout warnings during analysis
+  - Higher values allow KataGo more time to think
+  - Recommended: 120-300 seconds for thorough analysis
 
 ## Project Structure
 
@@ -314,6 +322,28 @@ Reduce the number of visits in `config.json`:
 ```
 
 Lower values = faster but less accurate analysis.
+
+### Getting Timeout Warnings During Analysis
+
+If you see "Warning: Timeout waiting for KataGo analysis response", increase the timeout:
+
+```json
+{
+  "katago": {
+    "analysis_timeout": 180
+  }
+}
+```
+
+**Common causes:**
+- High `max_visits` value (200+) requires more time
+- Slower hardware (CPU vs GPU)
+- Complex board positions with many variations
+
+**Solutions:**
+- Increase `analysis_timeout` to 180-300 seconds
+- Or reduce `max_visits` to 100-150 for faster analysis
+- GPU acceleration (if available) significantly speeds up analysis
 
 ### SGF File Won't Load
 

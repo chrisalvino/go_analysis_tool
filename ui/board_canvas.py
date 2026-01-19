@@ -32,6 +32,7 @@ class BoardCanvas(tk.Canvas):
         self.error_moves: Set[Tuple[int, int]] = set()
         self.hover_pos: Optional[Tuple[int, int]] = None
         self.preview_stone: Optional[Stone] = None
+        self.top_move_candidates: list = []  # List of (row, col, rank) for top moves
 
         # Bind events
         self.bind('<Button-1>', self._on_click)
@@ -85,6 +86,7 @@ class BoardCanvas(tk.Canvas):
         self._draw_stones()
         self._draw_last_move_marker()
         self._draw_error_markers()
+        self._draw_move_candidates()
 
     def _draw_grid(self) -> None:
         """Draw the board grid."""
@@ -211,6 +213,44 @@ class BoardCanvas(tk.Canvas):
                 fill='red', width=3, tags='error'
             )
 
+    def _draw_move_candidates(self) -> None:
+        """Draw numbered markers for top move candidates."""
+        for row, col, rank in self.top_move_candidates:
+            x = self.margin + col * self.cell_size
+            y = self.margin + row * self.cell_size
+            radius = 12
+
+            # Draw circle with rank number
+            # Color: Green for #1, fading to yellow/orange for lower ranks
+            if rank == 0:
+                color = '#00CC00'  # Bright green for best move
+            elif rank == 1:
+                color = '#66CC00'  # Green-yellow
+            elif rank == 2:
+                color = '#CCCC00'  # Yellow
+            elif rank == 3:
+                color = '#CC9900'  # Orange
+            else:
+                color = '#CC6600'  # Dark orange
+
+            # Draw circle
+            self.create_oval(
+                x - radius, y - radius,
+                x + radius, y + radius,
+                outline=color,
+                width=3,
+                tags='candidate'
+            )
+
+            # Draw rank number
+            self.create_text(
+                x, y,
+                text=str(rank + 1),  # Display as 1-5 instead of 0-4
+                font=('Arial', 12, 'bold'),
+                fill=color,
+                tags='candidate'
+            )
+
     def set_last_move(self, row: int, col: int) -> None:
         """Set the last move position.
 
@@ -233,6 +273,15 @@ class BoardCanvas(tk.Canvas):
             errors: Set of (row, col) positions
         """
         self.error_moves = errors
+        self.redraw()
+
+    def set_top_move_candidates(self, candidates: list) -> None:
+        """Set the top move candidates to display on the board.
+
+        Args:
+            candidates: List of (row, col, rank) tuples where rank is 0-4 for top 5 moves
+        """
+        self.top_move_candidates = candidates
         self.redraw()
 
     def _coords_to_position(self, x: int, y: int) -> Optional[Tuple[int, int]]:

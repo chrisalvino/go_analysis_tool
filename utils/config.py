@@ -13,7 +13,8 @@ class Config:
             'executable_path': '',
             'config_path': '',
             'model_path': '',
-            'max_visits': 200
+            'max_visits': 200,
+            'analysis_timeout': 120  # Timeout in seconds for analysis (default: 120s = 2 minutes)
         },
         'analysis': {
             'error_threshold': 3.0,
@@ -128,6 +129,14 @@ class Config:
             Maximum visits
         """
         return self.get('katago', 'max_visits', 200)
+
+    def get_analysis_timeout(self) -> int:
+        """Get analysis timeout in seconds.
+
+        Returns:
+            Timeout in seconds (default: 120)
+        """
+        return self.get('katago', 'analysis_timeout', 120)
 
     def get_error_threshold(self) -> float:
         """Get error detection threshold.
