@@ -47,6 +47,9 @@ class GoAnalysisTool(tk.Tk):
         # Mode
         self.play_mode = True  # True = play mode, False = analysis mode
 
+        # Track current SGF file for screenshot output
+        self.current_sgf_path: Optional[str] = None
+
         self._setup_ui()
         self._setup_menu()
         self._bind_callbacks()
@@ -188,6 +191,9 @@ class GoAnalysisTool(tk.Tk):
             self.game_tree = GameTree(size)
             self.current_player = Stone.BLACK
 
+            # Clear SGF path for new game
+            self.current_sgf_path = None
+
             # Update UI
             self.board_canvas.set_board(self.board)
             self.analysis_panel.board_size = size
@@ -206,6 +212,9 @@ class GoAnalysisTool(tk.Tk):
                 self.game_tree = SGFParser.parse_file(filename)
                 self.board = Board(self.game_tree.board_size)
                 self.rules = GoRules(self.board)
+
+                # Track the SGF path for screenshot output
+                self.current_sgf_path = filename
 
                 # Update canvas to use new board
                 self.board_canvas.set_board(self.board)
@@ -639,6 +648,9 @@ class GoAnalysisTool(tk.Tk):
 
                 self.after(0, lambda: messagebox.showinfo("Analysis Complete", f"Found {len(errors)} errors"))
 
+                # Dump error screenshots
+                self.after(0, lambda: self._dump_error_screenshots())
+
             except Exception as e:
                 import traceback
                 error_msg = str(e)
@@ -700,6 +712,117 @@ class GoAnalysisTool(tk.Tk):
             self._replay_to_current()
             self._update_display()
             # Analysis display is now handled automatically by _update_display()
+
+    def _capture_screenshot(self, output_path: str) -> bool:
+        """Capture a screenshot of the entire window.
+
+        Args:
+            output_path: Path to save the screenshot
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            from PIL import ImageGrab
+            import os
+
+            # Force update to ensure UI is fully rendered
+            self.update_idletasks()
+            self.update()
+
+            # Get window position and size
+            x = self.winfo_rootx()
+            y = self.winfo_rooty()
+            width = self.winfo_width()
+            height = self.winfo_height()
+
+            # Capture the window area
+            screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
+
+            # Ensure output directory exists
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+            # Save screenshot
+            screenshot.save(output_path)
+            print(f"Screenshot saved: {output_path}")
+            return True
+
+        except ImportError:
+            print("ERROR: Pillow (PIL) is not installed. Please run: pip install Pillow")
+            messagebox.showerror(
+                "Screenshot Error",
+                "Pillow library is not installed.\n\n"
+                "To enable screenshots, run:\n"
+                "pip install Pillow"
+            )
+            return False
+        except Exception as e:
+            print(f"Error capturing screenshot: {e}")
+            return False
+
+    def _dump_error_screenshots(self) -> None:
+        """Dump screenshots for all error positions after analysis."""
+        if not self.analysis_results or not self.current_sgf_path:
+            print("No analysis results or SGF path - skipping screenshot dump")
+            return
+
+        import os
+
+        # Get SGF filename without extension
+        sgf_basename = os.path.basename(self.current_sgf_path)
+        sgf_name = os.path.splitext(sgf_basename)[0]
+
+        # Create output directory
+        sgf_dir = os.path.dirname(self.current_sgf_path)
+        output_dir = os.path.join(sgf_dir, sgf_name)
+
+        # Extract errors
+        errors = [(a.move_number, a.played_move, a.point_loss)
+                  for a in self.analysis_results if a.is_error]
+
+        if not errors:
+            print("No errors to screenshot")
+            messagebox.showinfo("Screenshots", "No errors found to screenshot.")
+            return
+
+        print(f"Dumping {len(errors)} error screenshots to {output_dir}/")
+
+        # Switch to analysis mode for proper display
+        original_mode = self.play_mode
+        if self.play_mode:
+            self._set_analysis_mode()
+
+        # Capture screenshot for each error
+        success_count = 0
+        for move_num, move_pos, point_loss in errors:
+            # Jump to error position
+            if self.game_tree.go_to_move_number(move_num):
+                self._replay_to_current()
+                self._update_display()
+
+                # Give UI time to update
+                self.update_idletasks()
+                self.update()
+
+                # Generate filename
+                filename = f"move_{move_num:03d}_loss_{point_loss:.1f}pts.png"
+                output_path = os.path.join(output_dir, filename)
+
+                # Capture screenshot
+                if self._capture_screenshot(output_path):
+                    success_count += 1
+
+        # Restore original mode
+        if original_mode:
+            self._set_play_mode()
+
+        print(f"Screenshot dump complete: {success_count}/{len(errors)} images saved")
+
+        # Show completion message with path
+        messagebox.showinfo(
+            "Screenshots Complete",
+            f"Saved {success_count} error screenshots to:\n\n{output_dir}/"
+        )
 
     def destroy(self) -> None:
         """Clean up resources."""

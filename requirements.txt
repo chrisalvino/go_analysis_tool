@@ -7,3 +7,6 @@
 
 # Optional: for better SGF parsing (if needed later)
 sgfmill>=1.1.1
+
+# For screenshot capture
+Pillow>=9.0.0

@@ -3,11 +3,11 @@
     "executable_path": "/opt/homebrew/bin/katago",
     "config_path": "katago_data/katago_config.cfg",
     "model_path": "/opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz",
-    "max_visits": 200,
+    "max_visits": 400,
     "analysis_timeout": 180 
   },
   "analysis": {
-    "error_threshold": 7.0,
+    "error_threshold": 5.0,
     "top_moves_count": 5,
     "analysis_threads": 1
   },
