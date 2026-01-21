@@ -2210,3 +2210,1519 @@ rules = tromp-taylor
 2026-01-18 20:16:52-0800: Quit requested by controller
 2026-01-18 20:16:52-0800: GPU -1 finishing, processed 8693 rows 4376 batches
 2026-01-18 20:16:52-0800: All cleaned up, quitting
+2026-01-18 20:24:38-0800: Quit requested by controller
+2026-01-18 20:24:38-0800: GPU -1 finishing, processed 8837 rows 4452 batches
+2026-01-18 20:24:38-0800: All cleaned up, quitting
+2026-01-18 20:24:42-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:24:42-0800: GTP Engine starting...
+2026-01-18 20:24:42-0800: KataGo v1.16.4
+2026-01-18 20:24:42-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:24:42-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:24:42-0800: nnRandSeed0 = 10157449358184836406
+2026-01-18 20:24:42-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:24:42-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:24:42-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:24:42-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:24:42-0800: --------------
+2026-01-18 20:24:42-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:24:42-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:24:42-0800: --------------
+2026-01-18 20:24:42-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:24:42-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:24:42-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:24:42-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:24:55-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:24:55-0800: GTP Engine starting...
+2026-01-18 20:24:55-0800: KataGo v1.16.4
+2026-01-18 20:24:55-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:24:55-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:24:55-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:24:55-0800: GTP Engine starting...
+2026-01-18 20:24:55-0800: KataGo v1.16.4
+2026-01-18 20:24:55-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:24:55-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:24:55-0800: nnRandSeed0 = 11654054935519417561
+2026-01-18 20:24:55-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:24:55-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:24:55-0800: nnRandSeed0 = 12946205913078328496
+2026-01-18 20:24:55-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:24:55-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:24:55-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:24:55-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:24:55-0800: --------------
+2026-01-18 20:24:55-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: --------------
+2026-01-18 20:24:55-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:24:55-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:24:55-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:24:55-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:24:55-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:24:55-0800: --------------
+2026-01-18 20:24:55-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: --------------
+2026-01-18 20:24:55-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:24:55-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:24:55-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:24:55-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:26:29-0800: Quit requested by controller
+2026-01-18 20:26:29-0800: GPU -1 finishing, processed 8690 rows 4377 batches
+2026-01-18 20:26:29-0800: All cleaned up, quitting
+2026-01-18 20:26:29-0800: Quit requested by controller
+2026-01-18 20:26:29-0800: GPU -1 finishing, processed 8742 rows 4403 batches
+2026-01-18 20:26:29-0800: All cleaned up, quitting
+2026-01-18 20:32:15-0800: GPU -1 finishing, processed 8753 rows 4402 batches
+2026-01-18 20:32:15-0800: All cleaned up, quitting
+2026-01-18 20:32:17-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:32:17-0800: GTP Engine starting...
+2026-01-18 20:32:17-0800: KataGo v1.16.4
+2026-01-18 20:32:17-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:32:17-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:32:17-0800: nnRandSeed0 = 4369993277963502849
+2026-01-18 20:32:17-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:32:17-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:32:18-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:32:18-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:32:18-0800: --------------
+2026-01-18 20:32:18-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:32:18-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:32:18-0800: --------------
+2026-01-18 20:32:18-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:32:18-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:32:18-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:32:18-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:32:26-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:32:26-0800: GTP Engine starting...
+2026-01-18 20:32:26-0800: KataGo v1.16.4
+2026-01-18 20:32:26-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:32:26-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:32:26-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:32:26-0800: GTP Engine starting...
+2026-01-18 20:32:26-0800: KataGo v1.16.4
+2026-01-18 20:32:26-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:32:26-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:32:26-0800: nnRandSeed0 = 15341294751336611299
+2026-01-18 20:32:26-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:32:26-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:32:26-0800: nnRandSeed0 = 6124084130511046882
+2026-01-18 20:32:26-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:32:26-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:32:27-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:32:27-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:32:27-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:32:27-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:32:27-0800: --------------
+2026-01-18 20:32:27-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: --------------
+2026-01-18 20:32:27-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:32:27-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:32:27-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:32:27-0800: --------------
+2026-01-18 20:32:27-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: --------------
+2026-01-18 20:32:27-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:32:27-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:32:27-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:32:27-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:33:55-0800: Quit requested by controller
+2026-01-18 20:33:55-0800: GPU -1 finishing, processed 8758 rows 4408 batches
+2026-01-18 20:33:55-0800: All cleaned up, quitting
+2026-01-18 20:33:55-0800: Quit requested by controller
+2026-01-18 20:33:55-0800: GPU -1 finishing, processed 8664 rows 4362 batches
+2026-01-18 20:33:55-0800: All cleaned up, quitting
+2026-01-18 20:36:41-0800: GPU -1 finishing, processed 8766 rows 4411 batches
+2026-01-18 20:36:41-0800: All cleaned up, quitting
+2026-01-18 20:36:44-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:36:44-0800: GTP Engine starting...
+2026-01-18 20:36:44-0800: KataGo v1.16.4
+2026-01-18 20:36:44-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:36:44-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:36:44-0800: nnRandSeed0 = 1846995967080174646
+2026-01-18 20:36:44-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:36:44-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:36:44-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:36:44-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:36:44-0800: --------------
+2026-01-18 20:36:44-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:36:44-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:36:44-0800: --------------
+2026-01-18 20:36:44-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:36:44-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:36:44-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:36:44-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:36:53-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:36:53-0800: GTP Engine starting...
+2026-01-18 20:36:53-0800: KataGo v1.16.4
+2026-01-18 20:36:53-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:36:53-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:36:53-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:36:53-0800: GTP Engine starting...
+2026-01-18 20:36:53-0800: KataGo v1.16.4
+2026-01-18 20:36:53-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:36:53-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:36:53-0800: nnRandSeed0 = 2374458575966931605
+2026-01-18 20:36:53-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:36:53-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:36:53-0800: nnRandSeed0 = 5467510180649723154
+2026-01-18 20:36:53-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:36:53-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:36:53-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:36:53-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:36:53-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:36:53-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:36:53-0800: --------------
+2026-01-18 20:36:53-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: --------------
+2026-01-18 20:36:53-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:36:53-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:36:53-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:36:53-0800: --------------
+2026-01-18 20:36:53-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: --------------
+2026-01-18 20:36:53-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:36:53-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:36:53-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:36:53-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:38:23-0800: Quit requested by controller
+2026-01-18 20:38:23-0800: GPU -1 finishing, processed 8796 rows 4426 batches
+2026-01-18 20:38:23-0800: All cleaned up, quitting
+2026-01-18 20:38:23-0800: Quit requested by controller
+2026-01-18 20:38:23-0800: GPU -1 finishing, processed 8735 rows 4401 batches
+2026-01-18 20:38:23-0800: All cleaned up, quitting
+2026-01-18 20:47:24-0800: GPU -1 finishing, processed 8773 rows 4416 batches
+2026-01-18 20:47:24-0800: All cleaned up, quitting
+2026-01-18 20:47:26-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:47:26-0800: GTP Engine starting...
+2026-01-18 20:47:26-0800: KataGo v1.16.4
+2026-01-18 20:47:26-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:47:26-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:47:26-0800: nnRandSeed0 = 1063394920292712528
+2026-01-18 20:47:26-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:47:26-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:47:27-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:47:27-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:47:27-0800: --------------
+2026-01-18 20:47:27-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:47:27-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:47:27-0800: --------------
+2026-01-18 20:47:27-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:47:27-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:47:27-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:47:27-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:47:35-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:47:35-0800: GTP Engine starting...
+2026-01-18 20:47:35-0800: KataGo v1.16.4
+2026-01-18 20:47:35-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:47:35-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:47:35-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:47:35-0800: GTP Engine starting...
+2026-01-18 20:47:35-0800: KataGo v1.16.4
+2026-01-18 20:47:35-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:47:35-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:47:35-0800: nnRandSeed0 = 15815049892767180888
+2026-01-18 20:47:35-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:47:35-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:47:35-0800: nnRandSeed0 = 11899271951275793251
+2026-01-18 20:47:35-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:47:35-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:47:36-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:47:36-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:47:36-0800: --------------
+2026-01-18 20:47:36-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: --------------
+2026-01-18 20:47:36-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:47:36-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:47:36-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:47:36-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:47:36-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:47:36-0800: --------------
+2026-01-18 20:47:36-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: --------------
+2026-01-18 20:47:36-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:47:36-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:47:36-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:47:36-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:49:15-0800: Quit requested by controller
+2026-01-18 20:49:15-0800: GPU -1 finishing, processed 8786 rows 4424 batches
+2026-01-18 20:49:15-0800: All cleaned up, quitting
+2026-01-18 20:49:15-0800: Quit requested by controller
+2026-01-18 20:49:15-0800: GPU -1 finishing, processed 8678 rows 4367 batches
+2026-01-18 20:49:15-0800: All cleaned up, quitting
+2026-01-18 20:51:57-0800: Quit requested by controller
+2026-01-18 20:51:57-0800: GPU -1 finishing, processed 8769 rows 4418 batches
+2026-01-18 20:51:57-0800: All cleaned up, quitting
+2026-01-18 20:55:18-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:55:18-0800: GTP Engine starting...
+2026-01-18 20:55:18-0800: KataGo v1.16.4
+2026-01-18 20:55:18-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:55:18-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:55:18-0800: nnRandSeed0 = 6165396078465398152
+2026-01-18 20:55:18-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:55:18-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:55:19-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:55:19-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:55:19-0800: --------------
+2026-01-18 20:55:19-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:55:19-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:55:19-0800: --------------
+2026-01-18 20:55:19-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:55:19-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:55:19-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:55:19-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:55:29-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:55:29-0800: GTP Engine starting...
+2026-01-18 20:55:29-0800: KataGo v1.16.4
+2026-01-18 20:55:29-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:55:29-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:55:29-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 20:55:29-0800: GTP Engine starting...
+2026-01-18 20:55:29-0800: KataGo v1.16.4
+2026-01-18 20:55:29-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 20:55:29-0800: Using 4 CPU thread(s) for search
+2026-01-18 20:55:29-0800: nnRandSeed0 = 12790359835789290738
+2026-01-18 20:55:29-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:55:29-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:55:29-0800: nnRandSeed0 = 11234252713170173400
+2026-01-18 20:55:29-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 20:55:29-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 20:55:30-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:55:30-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:55:30-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 20:55:30-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 20:55:30-0800: --------------
+2026-01-18 20:55:30-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: --------------
+2026-01-18 20:55:30-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:55:30-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:55:30-0800: GTP ready, beginning main protocol loop
+2026-01-18 20:55:30-0800: --------------
+2026-01-18 20:55:30-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: --------------
+2026-01-18 20:55:30-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 20:55:30-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 20:55:30-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 20:55:30-0800: GTP ready, beginning main protocol loop
+2026-01-18 21:34:45-0800: Quit requested by controller
+2026-01-18 21:34:45-0800: GPU -1 finishing, processed 12436 rows 6262 batches
+2026-01-18 21:34:45-0800: All cleaned up, quitting
+2026-01-18 21:34:45-0800: Quit requested by controller
+2026-01-18 21:34:45-0800: GPU -1 finishing, processed 10478 rows 5280 batches
+2026-01-18 21:34:45-0800: All cleaned up, quitting
+2026-01-18 21:51:56-0800: GPU -1 finishing, processed 12022 rows 6054 batches
+2026-01-18 21:51:56-0800: All cleaned up, quitting
+2026-01-18 21:51:58-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 21:51:58-0800: GTP Engine starting...
+2026-01-18 21:51:58-0800: KataGo v1.16.4
+2026-01-18 21:51:58-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 21:51:58-0800: Using 4 CPU thread(s) for search
+2026-01-18 21:51:58-0800: nnRandSeed0 = 5162958775742807795
+2026-01-18 21:51:58-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 21:51:58-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 21:51:59-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 21:51:59-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 21:51:59-0800: --------------
+2026-01-18 21:51:59-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 21:51:59-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 21:51:59-0800: --------------
+2026-01-18 21:51:59-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 21:51:59-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 21:51:59-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 21:51:59-0800: GTP ready, beginning main protocol loop
+2026-01-18 21:52:08-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 21:52:08-0800: GTP Engine starting...
+2026-01-18 21:52:08-0800: KataGo v1.16.4
+2026-01-18 21:52:08-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 21:52:08-0800: Using 4 CPU thread(s) for search
+2026-01-18 21:52:08-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-18 21:52:08-0800: GTP Engine starting...
+2026-01-18 21:52:08-0800: KataGo v1.16.4
+2026-01-18 21:52:08-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-18 21:52:08-0800: Using 4 CPU thread(s) for search
+2026-01-18 21:52:08-0800: nnRandSeed0 = 16359211699359950862
+2026-01-18 21:52:08-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 21:52:08-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 21:52:08-0800: nnRandSeed0 = 950385246308255775
+2026-01-18 21:52:08-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-18 21:52:08-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-18 21:52:08-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 21:52:08-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 21:52:08-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-18 21:52:08-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-18 21:52:08-0800: --------------
+2026-01-18 21:52:08-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: --------------
+2026-01-18 21:52:08-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 21:52:08-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 21:52:08-0800: GTP ready, beginning main protocol loop
+2026-01-18 21:52:08-0800: --------------
+2026-01-18 21:52:08-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: --------------
+2026-01-18 21:52:08-0800: Loaded config katago_data/katago_config.cfg
+2026-01-18 21:52:08-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-18 21:52:08-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-18 21:52:08-0800: GTP ready, beginning main protocol loop
+2026-01-18 22:12:40-0800: Quit requested by controller
+2026-01-18 22:12:40-0800: GPU -1 finishing, processed 12702 rows 6391 batches
+2026-01-18 22:12:40-0800: All cleaned up, quitting
+2026-01-18 22:12:40-0800: Quit requested by controller
+2026-01-18 22:12:40-0800: GPU -1 finishing, processed 1415 rows 713 batches
+2026-01-18 22:12:40-0800: All cleaned up, quitting
+2026-01-19 10:46:00-0800: Quit requested by controller
+2026-01-19 10:46:00-0800: GPU -1 finishing, processed 12844 rows 6467 batches
+2026-01-19 10:46:00-0800: All cleaned up, quitting
+2026-01-19 10:46:13-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 10:46:13-0800: GTP Engine starting...
+2026-01-19 10:46:13-0800: KataGo v1.16.4
+2026-01-19 10:46:13-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 10:46:13-0800: Using 4 CPU thread(s) for search
+2026-01-19 10:46:13-0800: nnRandSeed0 = 6713189648704203074
+2026-01-19 10:46:13-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 10:46:13-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 10:46:14-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 10:46:14-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 10:46:14-0800: --------------
+2026-01-19 10:46:14-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 10:46:14-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 10:46:14-0800: --------------
+2026-01-19 10:46:14-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 10:46:14-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 10:46:14-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 10:46:14-0800: GTP ready, beginning main protocol loop
+2026-01-19 10:46:25-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 10:46:25-0800: GTP Engine starting...
+2026-01-19 10:46:25-0800: KataGo v1.16.4
+2026-01-19 10:46:25-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 10:46:25-0800: Using 4 CPU thread(s) for search
+2026-01-19 10:46:25-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 10:46:25-0800: GTP Engine starting...
+2026-01-19 10:46:25-0800: KataGo v1.16.4
+2026-01-19 10:46:25-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 10:46:25-0800: Using 4 CPU thread(s) for search
+2026-01-19 10:46:25-0800: nnRandSeed0 = 7696413671056328841
+2026-01-19 10:46:25-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 10:46:25-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 10:46:25-0800: nnRandSeed0 = 12105669783301902128
+2026-01-19 10:46:25-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 10:46:25-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 10:46:25-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 10:46:25-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 10:46:25-0800: --------------
+2026-01-19 10:46:25-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: --------------
+2026-01-19 10:46:25-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 10:46:25-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 10:46:25-0800: GTP ready, beginning main protocol loop
+2026-01-19 10:46:25-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 10:46:25-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 10:46:25-0800: --------------
+2026-01-19 10:46:25-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: --------------
+2026-01-19 10:46:25-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 10:46:25-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 10:46:25-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 10:46:25-0800: GTP ready, beginning main protocol loop
+2026-01-19 10:58:06-0800: Quit requested by controller
+2026-01-19 10:58:06-0800: GPU -1 finishing, processed 8339 rows 4199 batches
+2026-01-19 10:58:06-0800: All cleaned up, quitting
+2026-01-19 10:58:06-0800: Quit requested by controller
+2026-01-19 10:58:06-0800: GPU -1 finishing, processed 498 rows 252 batches
+2026-01-19 10:58:06-0800: All cleaned up, quitting
+2026-01-19 10:58:06-0800: Quit requested by controller
+2026-01-19 10:58:06-0800: GPU -1 finishing, processed 8595 rows 4331 batches
+2026-01-19 10:58:06-0800: All cleaned up, quitting
+2026-01-19 10:58:40-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 10:58:40-0800: GTP Engine starting...
+2026-01-19 10:58:40-0800: KataGo v1.16.4
+2026-01-19 10:58:40-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 10:58:40-0800: Using 4 CPU thread(s) for search
+2026-01-19 10:58:40-0800: nnRandSeed0 = 11271614167723720937
+2026-01-19 10:58:40-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 10:58:40-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 10:58:40-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 10:58:40-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 10:58:40-0800: --------------
+2026-01-19 10:58:40-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 10:58:40-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 10:58:40-0800: --------------
+2026-01-19 10:58:40-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 10:58:40-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 10:58:40-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 10:58:40-0800: GTP ready, beginning main protocol loop
+2026-01-19 11:03:38-0800: Quit requested by controller
+2026-01-19 11:03:38-0800: GPU -1 finishing, processed 27661 rows 13960 batches
+2026-01-19 11:03:38-0800: All cleaned up, quitting
+2026-01-19 11:20:11-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 11:20:11-0800: GTP Engine starting...
+2026-01-19 11:20:11-0800: KataGo v1.16.4
+2026-01-19 11:20:11-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 11:20:11-0800: Using 4 CPU thread(s) for search
+2026-01-19 11:20:11-0800: nnRandSeed0 = 1001932516679941082
+2026-01-19 11:20:11-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 11:20:11-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 11:20:12-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 11:20:12-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 11:20:12-0800: --------------
+2026-01-19 11:20:12-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 11:20:12-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 11:20:12-0800: --------------
+2026-01-19 11:20:12-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 11:20:12-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 11:20:12-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 11:20:12-0800: GTP ready, beginning main protocol loop
+2026-01-19 11:20:13-0800: Quit requested by controller
+2026-01-19 11:20:14-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 11:20:14-0800: All cleaned up, quitting
+2026-01-19 11:20:31-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 11:20:31-0800: GTP Engine starting...
+2026-01-19 11:20:31-0800: KataGo v1.16.4
+2026-01-19 11:20:31-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 11:20:31-0800: Using 4 CPU thread(s) for search
+2026-01-19 11:20:31-0800: nnRandSeed0 = 295464112358736957
+2026-01-19 11:20:31-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 11:20:31-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 11:20:32-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 11:20:32-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 11:20:32-0800: --------------
+2026-01-19 11:20:32-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 11:20:32-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 11:20:32-0800: --------------
+2026-01-19 11:20:32-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 11:20:32-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 11:20:32-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 11:20:32-0800: GTP ready, beginning main protocol loop
+2026-01-19 11:25:28-0800: Quit requested by controller
+2026-01-19 11:25:28-0800: GPU -1 finishing, processed 41366 rows 20828 batches
+2026-01-19 11:25:28-0800: All cleaned up, quitting
+2026-01-19 11:27:51-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 11:27:51-0800: GTP Engine starting...
+2026-01-19 11:27:51-0800: KataGo v1.16.4
+2026-01-19 11:27:51-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 11:27:51-0800: Using 4 CPU thread(s) for search
+2026-01-19 11:27:51-0800: nnRandSeed0 = 8523516192736191707
+2026-01-19 11:27:51-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 11:27:51-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 11:27:51-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 11:27:51-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 11:27:51-0800: --------------
+2026-01-19 11:27:51-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 11:27:51-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 11:27:51-0800: --------------
+2026-01-19 11:27:51-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 11:27:51-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 11:27:51-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 11:27:51-0800: GTP ready, beginning main protocol loop
+2026-01-19 12:19:42-0800: Quit requested by controller
+2026-01-19 12:19:42-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 12:19:42-0800: All cleaned up, quitting
+2026-01-19 12:19:44-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 12:19:44-0800: GTP Engine starting...
+2026-01-19 12:19:44-0800: KataGo v1.16.4
+2026-01-19 12:19:44-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 12:19:44-0800: Using 4 CPU thread(s) for search
+2026-01-19 12:19:44-0800: nnRandSeed0 = 10007536604283500359
+2026-01-19 12:19:44-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 12:19:44-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 12:19:45-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 12:19:45-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 12:19:45-0800: --------------
+2026-01-19 12:19:45-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 12:19:45-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 12:19:45-0800: --------------
+2026-01-19 12:19:45-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 12:19:45-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 12:19:45-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 12:19:45-0800: GTP ready, beginning main protocol loop
+2026-01-19 17:46:08-0800: Quit requested by controller
+2026-01-19 17:46:08-0800: GPU -1 finishing, processed 55666 rows 28106 batches
+2026-01-19 17:46:08-0800: All cleaned up, quitting
+2026-01-19 17:46:13-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 17:46:13-0800: GTP Engine starting...
+2026-01-19 17:46:13-0800: KataGo v1.16.4
+2026-01-19 17:46:13-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 17:46:13-0800: Using 4 CPU thread(s) for search
+2026-01-19 17:46:13-0800: nnRandSeed0 = 16004846826193511545
+2026-01-19 17:46:13-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 17:46:13-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 17:46:13-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 17:46:13-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 17:46:13-0800: --------------
+2026-01-19 17:46:13-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 17:46:13-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 17:46:13-0800: --------------
+2026-01-19 17:46:13-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 17:46:13-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 17:46:13-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 17:46:13-0800: GTP ready, beginning main protocol loop
+2026-01-19 17:54:47-0800: Quit requested by controller
+2026-01-19 17:54:47-0800: GPU -1 finishing, processed 40839 rows 20557 batches
+2026-01-19 17:54:47-0800: All cleaned up, quitting
+2026-01-19 17:56:11-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 17:56:11-0800: GTP Engine starting...
+2026-01-19 17:56:11-0800: KataGo v1.16.4
+2026-01-19 17:56:11-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 17:56:11-0800: Using 4 CPU thread(s) for search
+2026-01-19 17:56:11-0800: nnRandSeed0 = 16273755068742900990
+2026-01-19 17:56:11-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 17:56:11-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 17:56:11-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 17:56:11-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 17:56:11-0800: --------------
+2026-01-19 17:56:11-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 17:56:11-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 17:56:11-0800: --------------
+2026-01-19 17:56:11-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 17:56:11-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 17:56:11-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 17:56:11-0800: GTP ready, beginning main protocol loop
+2026-01-19 17:59:15-0800: Quit requested by controller
+2026-01-19 17:59:15-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 17:59:15-0800: All cleaned up, quitting
+2026-01-19 17:59:32-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 17:59:32-0800: GTP Engine starting...
+2026-01-19 17:59:32-0800: KataGo v1.16.4
+2026-01-19 17:59:32-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 17:59:32-0800: Using 4 CPU thread(s) for search
+2026-01-19 17:59:32-0800: nnRandSeed0 = 14982074533344160247
+2026-01-19 17:59:32-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 17:59:32-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 17:59:32-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 17:59:32-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 17:59:32-0800: --------------
+2026-01-19 17:59:32-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 17:59:32-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 17:59:32-0800: --------------
+2026-01-19 17:59:32-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 17:59:32-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 17:59:32-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 17:59:32-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:00:35-0800: Quit requested by controller
+2026-01-19 18:00:35-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 18:00:35-0800: All cleaned up, quitting
+2026-01-19 18:02:08-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:02:08-0800: GTP Engine starting...
+2026-01-19 18:02:08-0800: KataGo v1.16.4
+2026-01-19 18:02:08-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:02:08-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:02:08-0800: nnRandSeed0 = 9511961841941198685
+2026-01-19 18:02:08-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:02:08-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:02:09-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:02:09-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:02:09-0800: --------------
+2026-01-19 18:02:09-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:02:09-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:02:09-0800: --------------
+2026-01-19 18:02:09-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:02:09-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:02:09-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:02:09-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:02:10-0800: Quit requested by controller
+2026-01-19 18:02:10-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 18:02:10-0800: All cleaned up, quitting
+2026-01-19 18:02:13-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:02:13-0800: GTP Engine starting...
+2026-01-19 18:02:13-0800: KataGo v1.16.4
+2026-01-19 18:02:13-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:02:13-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:02:13-0800: nnRandSeed0 = 974202500460139438
+2026-01-19 18:02:13-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:02:13-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:02:14-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:02:14-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:02:14-0800: --------------
+2026-01-19 18:02:14-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:02:14-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:02:14-0800: --------------
+2026-01-19 18:02:14-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:02:14-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:02:14-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:02:14-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:05:47-0800: Quit requested by controller
+2026-01-19 18:05:47-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 18:05:47-0800: All cleaned up, quitting
+2026-01-19 18:09:44-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:09:44-0800: GTP Engine starting...
+2026-01-19 18:09:44-0800: KataGo v1.16.4
+2026-01-19 18:09:44-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:09:44-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:09:44-0800: nnRandSeed0 = 16125865034642065101
+2026-01-19 18:09:44-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:09:44-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:09:44-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:09:44-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:09:44-0800: --------------
+2026-01-19 18:09:44-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:09:44-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:09:44-0800: --------------
+2026-01-19 18:09:44-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:09:44-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:09:44-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:09:44-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:12:35-0800: Quit requested by controller
+2026-01-19 18:12:35-0800: GPU -1 finishing, processed 26826 rows 13504 batches
+2026-01-19 18:12:35-0800: All cleaned up, quitting
+2026-01-19 18:17:00-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:17:00-0800: GTP Engine starting...
+2026-01-19 18:17:00-0800: KataGo v1.16.4
+2026-01-19 18:17:00-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:17:00-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:17:00-0800: nnRandSeed0 = 833741259157210642
+2026-01-19 18:17:00-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:17:00-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:17:00-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:17:00-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:17:00-0800: --------------
+2026-01-19 18:17:00-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:17:00-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:17:00-0800: --------------
+2026-01-19 18:17:00-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:17:00-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:17:00-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:17:00-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:17:02-0800: Quit requested by controller
+2026-01-19 18:17:02-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 18:17:02-0800: All cleaned up, quitting
+2026-01-19 18:17:04-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:17:04-0800: GTP Engine starting...
+2026-01-19 18:17:04-0800: KataGo v1.16.4
+2026-01-19 18:17:04-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:17:04-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:17:04-0800: nnRandSeed0 = 16168163925864163904
+2026-01-19 18:17:04-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:17:04-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:17:05-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:17:05-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:17:05-0800: --------------
+2026-01-19 18:17:05-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:17:05-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:17:05-0800: --------------
+2026-01-19 18:17:05-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:17:05-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:17:05-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:17:05-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:22:11-0800: Quit requested by controller
+2026-01-19 18:22:11-0800: GPU -1 finishing, processed 41261 rows 20778 batches
+2026-01-19 18:22:11-0800: All cleaned up, quitting
+2026-01-19 18:26:10-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:26:10-0800: GTP Engine starting...
+2026-01-19 18:26:10-0800: KataGo v1.16.4
+2026-01-19 18:26:10-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:26:10-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:26:10-0800: nnRandSeed0 = 13340782746967953407
+2026-01-19 18:26:10-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:26:10-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:26:11-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:26:11-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:26:11-0800: --------------
+2026-01-19 18:26:11-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:26:11-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:26:11-0800: --------------
+2026-01-19 18:26:11-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:26:11-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:26:11-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:26:11-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:28:01-0800: Quit requested by controller
+2026-01-19 18:28:01-0800: GPU -1 finishing, processed 24085 rows 12131 batches
+2026-01-19 18:28:01-0800: All cleaned up, quitting
+2026-01-19 18:28:05-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:28:05-0800: GTP Engine starting...
+2026-01-19 18:28:05-0800: KataGo v1.16.4
+2026-01-19 18:28:05-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:28:05-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:28:05-0800: nnRandSeed0 = 10398559201873179569
+2026-01-19 18:28:05-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:28:05-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:28:06-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:28:06-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:28:06-0800: --------------
+2026-01-19 18:28:06-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:28:06-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:28:06-0800: --------------
+2026-01-19 18:28:06-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:28:06-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:28:06-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:28:06-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:31:55-0800: Quit requested by controller
+2026-01-19 18:31:55-0800: GPU -1 finishing, processed 41444 rows 20868 batches
+2026-01-19 18:31:55-0800: All cleaned up, quitting
+2026-01-19 18:34:22-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:34:22-0800: GTP Engine starting...
+2026-01-19 18:34:22-0800: KataGo v1.16.4
+2026-01-19 18:34:22-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:34:22-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:34:22-0800: nnRandSeed0 = 8413430469435161799
+2026-01-19 18:34:22-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:34:22-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:34:22-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:34:22-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:34:22-0800: --------------
+2026-01-19 18:34:22-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:34:22-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:34:22-0800: --------------
+2026-01-19 18:34:22-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:34:22-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:34:22-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:34:22-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:34:23-0800: Quit requested by controller
+2026-01-19 18:34:23-0800: GPU -1 finishing, processed 0 rows 0 batches
+2026-01-19 18:34:23-0800: All cleaned up, quitting
+2026-01-19 18:34:25-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 18:34:25-0800: GTP Engine starting...
+2026-01-19 18:34:25-0800: KataGo v1.16.4
+2026-01-19 18:34:25-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 18:34:25-0800: Using 4 CPU thread(s) for search
+2026-01-19 18:34:25-0800: nnRandSeed0 = 1749204919253907238
+2026-01-19 18:34:25-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 18:34:25-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 18:34:26-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 18:34:26-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 18:34:26-0800: --------------
+2026-01-19 18:34:26-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 18:34:26-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 18:34:26-0800: --------------
+2026-01-19 18:34:26-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 18:34:26-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 18:34:26-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 18:34:26-0800: GTP ready, beginning main protocol loop
+2026-01-19 18:38:06-0800: Quit requested by controller
+2026-01-19 18:38:06-0800: GPU -1 finishing, processed 45990 rows 23178 batches
+2026-01-19 18:38:06-0800: All cleaned up, quitting
+2026-01-19 19:21:51-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 19:21:51-0800: GTP Engine starting...
+2026-01-19 19:21:51-0800: KataGo v1.16.4
+2026-01-19 19:21:51-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 19:21:51-0800: Using 4 CPU thread(s) for search
+2026-01-19 19:21:51-0800: nnRandSeed0 = 13365113506348090230
+2026-01-19 19:21:51-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 19:21:51-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 19:21:53-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 19:21:53-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 19:21:53-0800: --------------
+2026-01-19 19:21:53-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 19:21:53-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 19:21:53-0800: --------------
+2026-01-19 19:21:53-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 19:21:53-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 19:21:53-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 19:21:53-0800: GTP ready, beginning main protocol loop
+2026-01-19 19:25:58-0800: Quit requested by controller
+2026-01-19 19:25:59-0800: GPU -1 finishing, processed 267 rows 135 batches
+2026-01-19 19:25:59-0800: All cleaned up, quitting
+2026-01-19 19:26:03-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 19:26:03-0800: GTP Engine starting...
+2026-01-19 19:26:03-0800: KataGo v1.16.4
+2026-01-19 19:26:03-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 19:26:03-0800: Using 4 CPU thread(s) for search
+2026-01-19 19:26:04-0800: nnRandSeed0 = 3357619255687916989
+2026-01-19 19:26:04-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 19:26:04-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 19:26:05-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 19:26:05-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 19:26:05-0800: --------------
+2026-01-19 19:26:05-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 19:26:05-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 19:26:05-0800: --------------
+2026-01-19 19:26:05-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 19:26:05-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 19:26:05-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 19:26:05-0800: GTP ready, beginning main protocol loop
+2026-01-19 19:33:48-0800: Quit requested by controller
+2026-01-19 19:33:48-0800: GPU -1 finishing, processed 46190 rows 23257 batches
+2026-01-19 19:33:48-0800: All cleaned up, quitting
+2026-01-19 19:36:49-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 19:36:49-0800: GTP Engine starting...
+2026-01-19 19:36:49-0800: KataGo v1.16.4
+2026-01-19 19:36:49-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 19:36:49-0800: Using 4 CPU thread(s) for search
+2026-01-19 19:36:49-0800: nnRandSeed0 = 18124911201691696244
+2026-01-19 19:36:49-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 19:36:49-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 19:36:50-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 19:36:50-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 19:36:50-0800: --------------
+2026-01-19 19:36:50-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 19:36:50-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 19:36:50-0800: --------------
+2026-01-19 19:36:50-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 19:36:50-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 19:36:50-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 19:36:50-0800: GTP ready, beginning main protocol loop
+2026-01-19 20:19:15-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-19 20:19:15-0800: GTP Engine starting...
+2026-01-19 20:19:15-0800: KataGo v1.16.4
+2026-01-19 20:19:15-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-19 20:19:15-0800: Using 4 CPU thread(s) for search
+2026-01-19 20:19:15-0800: nnRandSeed0 = 12811153845588029613
+2026-01-19 20:19:15-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-19 20:19:15-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-19 20:19:16-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-19 20:19:16-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-19 20:19:16-0800: --------------
+2026-01-19 20:19:16-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-19 20:19:16-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-19 20:19:16-0800: --------------
+2026-01-19 20:19:16-0800: Loaded config katago_data/katago_config.cfg
+2026-01-19 20:19:16-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-19 20:19:16-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-19 20:19:16-0800: GTP ready, beginning main protocol loop
+2026-01-20 07:21:20-0800: Quit requested by controller
+2026-01-20 07:21:20-0800: GPU -1 finishing, processed 54766 rows 27609 batches
+2026-01-20 07:21:21-0800: All cleaned up, quitting
+2026-01-20 07:21:35-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 07:21:35-0800: GTP Engine starting...
+2026-01-20 07:21:35-0800: KataGo v1.16.4
+2026-01-20 07:21:35-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-20 07:21:35-0800: Using 4 CPU thread(s) for search
+2026-01-20 07:21:35-0800: nnRandSeed0 = 1493815440589921306
+2026-01-20 07:21:35-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 07:21:35-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-20 07:21:35-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-20 07:21:35-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-20 07:21:35-0800: --------------
+2026-01-20 07:21:35-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 07:21:35-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 07:21:35-0800: --------------
+2026-01-20 07:21:35-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 07:21:35-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 07:21:35-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-20 07:21:35-0800: GTP ready, beginning main protocol loop
+2026-01-20 07:33:39-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 07:33:39-0800: GTP Engine starting...
+2026-01-20 07:33:39-0800: KataGo v1.16.4
+2026-01-20 07:33:39-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-20 07:33:39-0800: Using 4 CPU thread(s) for search
+2026-01-20 07:33:39-0800: nnRandSeed0 = 15076548992779353722
+2026-01-20 07:33:39-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 07:33:39-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-20 07:33:39-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-20 07:33:39-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-20 07:33:39-0800: --------------
+2026-01-20 07:33:39-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 07:33:39-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 07:33:39-0800: --------------
+2026-01-20 07:33:39-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 07:33:39-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 07:33:39-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-20 07:33:39-0800: GTP ready, beginning main protocol loop
+2026-01-20 07:35:53-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 07:35:53-0800: GTP Engine starting...
+2026-01-20 07:35:53-0800: KataGo v1.16.4
+2026-01-20 07:35:53-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-20 07:35:53-0800: Using 4 CPU thread(s) for search
+2026-01-20 07:35:53-0800: nnRandSeed0 = 14126080278698148531
+2026-01-20 07:35:53-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 07:35:53-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-20 07:35:54-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-20 07:35:54-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-20 07:35:54-0800: --------------
+2026-01-20 07:35:54-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 07:35:54-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 07:35:54-0800: --------------
+2026-01-20 07:35:54-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 07:35:54-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 07:35:54-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-20 07:35:54-0800: GTP ready, beginning main protocol loop
+2026-01-20 16:53:20-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 16:53:20-0800: GTP Engine starting...
+2026-01-20 16:53:20-0800: KataGo v1.16.4
+2026-01-20 16:53:20-0800: Using TrompTaylor rules initially, unless GTP/GUI overrides this
+2026-01-20 16:53:20-0800: Using 4 CPU thread(s) for search
+2026-01-20 16:53:20-0800: nnRandSeed0 = 9731101391922701500
+2026-01-20 16:53:20-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 16:53:20-0800: Initializing neural net buffer to be size 19 * 19 exactly
+2026-01-20 16:53:21-0800: Loaded neural net with nnXLen 19 nnYLen 19
+2026-01-20 16:53:21-0800: Initializing board with boardXSize 19 boardYSize 19
+2026-01-20 16:53:21-0800: --------------
+2026-01-20 16:53:21-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 16:53:21-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 16:53:21-0800: --------------
+2026-01-20 16:53:21-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 16:53:21-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 16:53:21-0800: Model name: kata1-b18c384nbt-s9996604416-d4316597426
+2026-01-20 16:53:21-0800: GTP ready, beginning main protocol loop
+2026-01-20 17:03:46-0800: Quit requested by controller
+2026-01-20 17:03:46-0800: GPU -1 finishing, processed 525 rows 265 batches
+2026-01-20 17:03:46-0800: All cleaned up, quitting
+2026-01-20 17:14:37-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numAnalysisThreads = 4
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 17:14:37-0800: Analysis Engine starting...
+2026-01-20 17:14:37-0800: KataGo v1.16.4
+2026-01-20 17:14:37-0800: nnRandSeed0 = 12007198798503849185
+2026-01-20 17:14:37-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 17:14:37-0800: Initializing neural net buffer to be size 19 * 19 allowing smaller boards
+2026-01-20 17:14:37-0800: --------------
+2026-01-20 17:14:37-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 17:14:37-0800: WARNING: Unused key 'logAllGTPCommunication' in katago_data/katago_config.cfg
+2026-01-20 17:14:37-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 17:14:37-0800: WARNING: Unused key 'rules' in katago_data/katago_config.cfg
+2026-01-20 17:14:37-0800: --------------
+2026-01-20 17:14:37-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 17:14:37-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 17:14:37-0800: Analyzing up to 4 positions at a time in parallel
+2026-01-20 17:14:37-0800: Started, ready to begin handling requests
+2026-01-20 17:14:49-0800: Error: {"error":"Must be an array of pairs of the form: [\"b\" or \"w\", GTP board vertex]","field":"moves","id":"query_2"}
+2026-01-20 17:18:34-0800: Running with following config:
+logAllGTPCommunication = false
+logFile = katago.log
+logSearchInfo = false
+maxPlayouts = 300
+maxVisits = 500
+nnCacheSizePowerOfTwo = 20
+nnMaxBatchSize = 16
+nnModelFile = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+numAnalysisThreads = 4
+numSearchThreads = 4
+rules = tromp-taylor
+
+2026-01-20 17:18:34-0800: Analysis Engine starting...
+2026-01-20 17:18:34-0800: KataGo v1.16.4
+2026-01-20 17:18:34-0800: nnRandSeed0 = 7313540016607106612
+2026-01-20 17:18:34-0800: After dedups: nnModelFile0 = /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz useFP16 auto useNHWC auto
+2026-01-20 17:18:34-0800: Initializing neural net buffer to be size 19 * 19 allowing smaller boards
+2026-01-20 17:18:35-0800: --------------
+2026-01-20 17:18:35-0800: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from katago_data/katago_config.cfg
+2026-01-20 17:18:35-0800: WARNING: Unused key 'logAllGTPCommunication' in katago_data/katago_config.cfg
+2026-01-20 17:18:35-0800: WARNING: Unused key 'nnModelFile' in katago_data/katago_config.cfg
+2026-01-20 17:18:35-0800: WARNING: Unused key 'rules' in katago_data/katago_config.cfg
+2026-01-20 17:18:35-0800: --------------
+2026-01-20 17:18:35-0800: Loaded config katago_data/katago_config.cfg
+2026-01-20 17:18:35-0800: Loaded model /opt/homebrew/Cellar/katago/1.16.4/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+2026-01-20 17:18:35-0800: Analyzing up to 4 positions at a time in parallel
+2026-01-20 17:18:35-0800: Started, ready to begin handling requests

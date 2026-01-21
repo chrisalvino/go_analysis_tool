@@ -26,11 +26,11 @@ class KataGoEngine:
         self.output_queue: Queue = Queue()
         self.reader_thread: Optional[threading.Thread] = None
         self.running = False
-        self.next_player = 'B'  # Track whose turn it is
         self.analysis_timeout = analysis_timeout  # Configurable timeout
+        self.query_counter = 0  # For unique query IDs
 
     def start(self) -> bool:
-        """Start the KataGo engine.
+        """Start the KataGo engine in analysis mode.
 
         Returns:
             True if started successfully
@@ -39,7 +39,7 @@ class KataGoEngine:
             self.process = subprocess.Popen(
                 [
                     self.katago_path,
-                    'gtp',
+                    'analysis',
                     '-config', self.config_path,
                     '-model', self.model_path
                 ],
@@ -52,13 +52,24 @@ class KataGoEngine:
 
             self.running = True
 
-            # Start reader thread
+            # Start reader threads
             self.reader_thread = threading.Thread(target=self._read_output, daemon=True)
             self.reader_thread.start()
 
-            # Send initial commands
-            self.send_command('name')
-            self.send_command('version')
+            # Start stderr reader to catch errors
+            self.stderr_thread = threading.Thread(target=self._read_stderr, daemon=True)
+            self.stderr_thread.start()
+
+            print("KataGo started in analysis mode")
+
+            # Give KataGo a moment to start up
+            import time
+            time.sleep(0.5)
+
+            # Check if process is still alive
+            if self.process.poll() is not None:
+                print(f"ERROR: KataGo process terminated immediately with code {self.process.poll()}")
+                return False
 
             return True
 
@@ -69,20 +80,28 @@ class KataGoEngine:
     def stop(self) -> None:
         """Stop the KataGo engine."""
         if self.process:
-            self.send_command('quit')
-            self.process.stdin.close()
-            self.process.wait(timeout=5)
             self.running = False
+            self.process.stdin.close()
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=5)
+            except:
+                self.process.kill()
             self.process = None
 
-    def send_command(self, command: str) -> None:
-        """Send a GTP command to KataGo.
+    def send_query(self, query: dict) -> None:
+        """Send a JSON query to KataGo.
 
         Args:
-            command: GTP command to send
+            query: JSON query dict
         """
         if self.process and self.process.stdin:
-            self.process.stdin.write(command + '\n')
+            # Check if process is still alive
+            if self.process.poll() is not None:
+                raise RuntimeError(f"KataGo process has terminated with code {self.process.poll()}")
+
+            query_json = json.dumps(query)
+            self.process.stdin.write(query_json + '\n')
             self.process.stdin.flush()
 
     def _read_output(self) -> None:
@@ -97,149 +116,102 @@ class KataGoEngine:
                     break
                 self.output_queue.put(line.strip())
             except Exception as e:
-                print(f"Error reading KataGo output: {e}")
+                if self.running:
+                    print(f"Error reading KataGo output: {e}")
                 break
 
-    def get_response(self, timeout: float = 10.0) -> Optional[str]:
-        """Get a response from KataGo.
+    def _read_stderr(self) -> None:
+        """Read stderr from KataGo to catch errors."""
+        if not self.process or not self.process.stderr:
+            return
 
-        Args:
-            timeout: Maximum time to wait for response
-
-        Returns:
-            Response string or None if timeout
-        """
-        response_lines = []
-
-        try:
-            while True:
-                line = self.output_queue.get(timeout=timeout)
-
+        while self.running:
+            try:
+                line = self.process.stderr.readline()
                 if not line:
-                    continue
-
-                response_lines.append(line)
-
-                # GTP responses end with an empty line or start with = or ?
-                if line.startswith('=') or line.startswith('?'):
-                    # Read until empty line
-                    while True:
-                        try:
-                            line = self.output_queue.get(timeout=1.0)
-                            if not line:
-                                break
-                            response_lines.append(line)
-                        except Empty:
-                            break
                     break
+                # Print stderr to console for debugging
+                print(f"KataGo stderr: {line.strip()}")
+            except Exception as e:
+                if self.running:
+                    print(f"Error reading KataGo stderr: {e}")
+                break
 
-        except Empty:
-            return None
-
-        return '\n'.join(response_lines)
-
-    def set_board_size(self, size: int) -> bool:
-        """Set the board size.
-
-        Args:
-            size: Board size (9, 13, or 19)
-
-        Returns:
-            True if successful
-        """
-        self.send_command(f'boardsize {size}')
-        response = self.get_response()
-        return response is not None and response.startswith('=')
-
-    def clear_board(self) -> bool:
-        """Clear the board.
-
-        Returns:
-            True if successful
-        """
-        self.send_command('clear_board')
-        response = self.get_response()
-        self.next_player = 'B'  # Reset to black after clearing
-        return response is not None and response.startswith('=')
-
-    def play_move(self, color: str, move: str) -> bool:
-        """Play a move on the engine's board.
+    def analyze_position(self, moves: List[str], board_size: int = 19, komi: float = 7.5,
+                        initial_player: str = 'B', max_visits: int = 200) -> Optional[Dict[str, Any]]:
+        """Analyze a position using kata-analyze.
 
         Args:
-            color: 'B' or 'W'
-            move: Move in GTP format (e.g., 'D4', 'pass')
-
-        Returns:
-            True if successful
-        """
-        self.send_command(f'play {color} {move}')
-        # Use longer timeout for play commands (they can be slow if engine is busy)
-        response = self.get_response(timeout=30.0)
-        # Switch player
-        if response is not None and response.startswith('='):
-            self.next_player = 'W' if color == 'B' else 'B'
-            return True
-        return False
-
-    def analyze_position(self, max_visits: int = 200) -> Optional[Dict[str, Any]]:
-        """Analyze the current position using lz-genmove_analyze.
-
-        Args:
+            moves: List of moves in GTP format (e.g., ["D4", "Q16", "D16"])
+            board_size: Board size (9, 13, or 19)
+            komi: Komi value
+            initial_player: Who plays first ('B' or 'W')
             max_visits: Maximum number of visits for analysis
 
         Returns:
             Analysis results as dict, or None if failed
         """
-        # Use lz-genmove_analyze command: lz-genmove_analyze PLAYER maxVisits
-        command = f'lz-genmove_analyze {self.next_player} {max_visits}'
-        self.send_command(command)
+        # Convert moves to kata-analyze format: [["b", "D4"], ["w", "Q16"], ...]
+        formatted_moves = []
+        current_player = initial_player.upper()
+        for move in moves:
+            formatted_moves.append([current_player, move])
+            # Alternate player
+            current_player = 'W' if current_player == 'B' else 'B'
 
-        # Wait for analysis result
+        # Build query
+        self.query_counter += 1
+        query = {
+            "id": f"query_{self.query_counter}",
+            "moves": formatted_moves,
+            "rules": "chinese",
+            "komi": komi,
+            "boardXSize": board_size,
+            "boardYSize": board_size,
+            "initialPlayer": initial_player,
+            "analyzeTurns": [len(moves)],  # Analyze after all moves
+            "maxVisits": max_visits,
+            "includeOwnership": False,
+            "includePolicy": False
+        }
+
+        # Send query
+        self.send_query(query)
+
+        # Wait for response
         try:
-            move_infos = []
-            line_count = 0
             while True:
                 line = self.output_queue.get(timeout=self.analysis_timeout)
 
                 if not line:
                     continue
 
-                line_count += 1
+                # Parse JSON response
+                try:
+                    result = json.loads(line)
 
-                # Check for final result line starting with "play"
-                if line.startswith('play '):
-                    # Debug: show what we collected
-                    if line_count < 10:
-                        print(f"DEBUG: Got {len(move_infos)} move_infos from {line_count} lines")
-                    # Return collected move data
-                    return {'moveInfos': move_infos}
+                    # Check if this is our response
+                    if result.get('id') == query['id']:
+                        # Extract move info for the position we analyzed
+                        if 'turnNumber' in result and result['turnNumber'] == len(moves):
+                            if 'moveInfos' in result:
+                                move_infos = []
+                                for move_info in result['moveInfos']:
+                                    # kata-analyze provides REAL scoreLead always!
+                                    data = {
+                                        'move': move_info.get('move', ''),
+                                        'visits': move_info.get('visits', 0),
+                                        'winrate': move_info.get('winrate', 0.5),
+                                        'scoreLead': move_info.get('scoreLead', 0.0),
+                                        'order': move_info.get('order', 0)
+                                    }
+                                    move_infos.append(data)
 
-                # Parse info lines
-                if line.startswith('info move '):
-                    # Debug first few
-                    if len(move_infos) < 3:
-                        print(f"DEBUG RAW: {line[:200]}")
+                                return {'moveInfos': move_infos}
 
-                    # IMPORTANT: Each line may contain MULTIPLE "info move" sections!
-                    # Split the line by " info move " to get all candidates
-                    # Example: "info move Q16 visits 100 ... info move D4 visits 50 ..."
-                    segments = line.split(' info move ')
-
-                    for i, segment in enumerate(segments):
-                        if not segment.strip():
-                            continue
-
-                        # Add "info move " prefix back
-                        if i == 0:
-                            # First segment starts with "info move "
-                            parse_line = segment
-                        else:
-                            # Subsequent segments need "info move " added back
-                            parse_line = 'info move ' + segment
-
-                        move_data = self._parse_info_line(parse_line)
-                        if move_data:
-                            move_infos.append(move_data)
+                except (json.JSONDecodeError, ValueError):
+                    # Not JSON or bad format, skip
+                    continue
 
         except Empty:
             print(f"Warning: Timeout waiting for KataGo analysis response (timeout: {self.analysis_timeout}s)")
@@ -247,60 +219,18 @@ class KataGoEngine:
 
         return None
 
-    def _parse_info_line(self, line: str) -> Optional[Dict[str, Any]]:
-        """Parse an info line from lz-genmove_analyze.
+    # Stub methods for compatibility - no longer needed in analysis mode
+    def set_board_size(self, size: int) -> bool:
+        """Stub - not used in analysis mode."""
+        return True
 
-        Args:
-            line: Info line like "info move Q16 visits 166 winrate 6310 ..."
+    def clear_board(self) -> bool:
+        """Stub - not used in analysis mode."""
+        return True
 
-        Returns:
-            Dictionary with move data or None if parse fails
-        """
-        try:
-            parts = line.split()
-            if len(parts) < 4 or parts[0] != 'info' or parts[1] != 'move':
-                return None
-
-            move_str = parts[2]
-            data = {'move': move_str}
-
-            # Parse key-value pairs
-            i = 3
-            while i < len(parts):
-                key = parts[i]
-                if i + 1 < len(parts):
-                    value_str = parts[i + 1]
-
-                    # Handle special keys
-                    if key == 'pv':
-                        # PV is the rest of the line
-                        data['pv'] = ' '.join(parts[i + 1:])
-                        break
-                    elif key in ['visits', 'order']:
-                        data[key] = int(value_str)
-                    elif key in ['winrate', 'prior', 'lcb']:
-                        # These are in units of 0.0001 (10000 = 1.0 = 100%)
-                        data[key] = float(value_str) / 10000.0
-                    else:
-                        data[key] = value_str
-
-                    i += 2
-                else:
-                    i += 1
-
-            # Calculate scoreLead from KataGo's evaluation metric (rough approximation)
-            # KataGo's evaluation is percentage-like (0.0-1.0 scale)
-            if 'winrate' in data:
-                # Simple approximation: 0.60 = ~10 point lead
-                wr = data['winrate']
-                # Convert evaluation (0.5 = even) to approximate score
-                data['scoreLead'] = (wr - 0.5) * 40.0  # Rough approximation
-
-            return data
-
-        except Exception as e:
-            print(f"Warning: Error parsing KataGo info line: {e}")
-            return None
+    def play_move(self, color: str, move: str) -> bool:
+        """Stub - not used in analysis mode."""
+        return True
 
     @staticmethod
     def coords_to_gtp(row: int, col: int, board_size: int = 19) -> str:

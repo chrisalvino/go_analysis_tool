@@ -125,6 +125,7 @@ class AnalysisPanel(tk.Frame):
             return
 
         # Display top moves
+        played_in_top_5 = False
         for i, move in enumerate(analysis.top_moves):
             rank = i + 1
 
@@ -147,20 +148,55 @@ class AnalysisPanel(tk.Frame):
             # Create line showing move and score
             line = f"{rank}. {move_str:5s} | Score: {score_str:6s}\n"
 
-            # Highlight if this is the played move
-            if analysis.played_move_analysis and move.move == analysis.played_move_analysis.move:
-                line = f">>> {line}"
+            # Highlight if this is the played move - handle both regular moves and passes
+            if analysis.played_move_analysis:
+                if analysis.played_move_analysis.is_pass and move.is_pass:
+                    line = f">>> {line}"
+                    played_in_top_5 = True
+                elif move.move == analysis.played_move_analysis.move:
+                    line = f">>> {line}"
+                    played_in_top_5 = True
 
             self.top_moves_text.insert(tk.END, line)
 
-        # Show point loss if available
-        if analysis.point_loss > 0:
+        # Check if we have a played move to display
+        if analysis.played_move_analysis and not played_in_top_5:
+            # Played move was analyzed but not in top 5
+            self.top_moves_text.insert(tk.END, "\n")
+
+            # Format the played move
+            if analysis.played_move_analysis.is_pass:
+                move_str = "Pass"
+            elif analysis.played_move_analysis.move:
+                row, col = analysis.played_move_analysis.move
+                col_letter = chr(ord('A') + col if col < 8 else ord('A') + col + 1)
+                row_num = self.board_size - row
+                move_str = f"{col_letter}{row_num}"
+            else:
+                move_str = "?"
+
+            score = analysis.played_move_analysis.score_lead
+            score_str = f"{score:+.1f}"
+
+            line = f">>> Played: {move_str:5s} | Score: {score_str:6s}"
+
+            # Color: red if error, green if just not in top 5 but not an error
+            tag_name = "played_move_error" if analysis.is_error else "played_move_ok"
+            self.top_moves_text.insert(tk.END, line, tag_name)
+
+            if analysis.point_loss > 0:
+                self.top_moves_text.insert(tk.END, f" (-{analysis.point_loss:.1f})", tag_name)
+
+        # Show point loss if in top 5
+        elif analysis.point_loss > 0 and played_in_top_5:
             self.top_moves_text.insert(tk.END, f"\nPoint loss: {analysis.point_loss:.1f}")
 
             if analysis.is_error:
                 self.top_moves_text.insert(tk.END, " [ERROR]", "error")
 
         self.top_moves_text.tag_config("error", foreground="red", font=("Arial", 10, "bold"))
+        self.top_moves_text.tag_config("played_move_error", foreground="red")
+        self.top_moves_text.tag_config("played_move_ok", foreground="green")
         self.top_moves_text.config(state=tk.DISABLED)
 
     def display_errors(self, errors: List[tuple]) -> None:

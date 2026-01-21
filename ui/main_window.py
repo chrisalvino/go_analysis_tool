@@ -555,8 +555,25 @@ class GoAnalysisTool(tk.Tk):
             # Update board canvas with candidates
             self.board_canvas.set_top_move_candidates(candidates)
 
-            # Show error marker only if this specific move is an error
-            if current_analysis.is_error and current_analysis.played_move:
+            # Check if played move is in top 5
+            played_in_top_5 = False
+            if current_analysis.played_move_analysis:
+                for move_analysis in current_analysis.top_moves[:5]:
+                    # Compare moves - handle both regular moves and passes
+                    if current_analysis.played_move_analysis.is_pass and move_analysis.is_pass:
+                        played_in_top_5 = True
+                        break
+                    elif move_analysis.move == current_analysis.played_move_analysis.move:
+                        played_in_top_5 = True
+                        break
+
+            # Show error marker only if this is an actual error (exceeds threshold)
+            show_error_marker = False
+            if current_analysis.played_move and current_analysis.is_error:
+                if current_analysis.played_move_analysis and not current_analysis.played_move_analysis.is_pass:
+                    show_error_marker = True
+
+            if show_error_marker:
                 self.board_canvas.set_error_moves({current_analysis.played_move})
             else:
                 self.board_canvas.set_error_moves(set())
@@ -611,7 +628,8 @@ class GoAnalysisTool(tk.Tk):
 
                 self.analysis_results = results
 
-                # Extract errors
+                # Extract errors - moves that exceed error threshold
+                # Note: Moves that weren't in top 5 are now analyzed automatically
                 errors = [(a.move_number, a.played_move, a.point_loss)
                          for a in results if a.is_error]
 
@@ -622,7 +640,10 @@ class GoAnalysisTool(tk.Tk):
                 self.after(0, lambda: messagebox.showinfo("Analysis Complete", f"Found {len(errors)} errors"))
 
             except Exception as e:
-                self.after(0, lambda: messagebox.showerror("Error", f"Analysis failed: {e}"))
+                import traceback
+                error_msg = str(e)
+                traceback.print_exc()  # Print full traceback to console
+                self.after(0, lambda msg=error_msg: messagebox.showerror("Error", f"Analysis failed: {msg}"))
 
             finally:
                 self.is_analyzing = False

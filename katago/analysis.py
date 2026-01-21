@@ -115,18 +115,11 @@ class GameAnalyzer:
         board_size = game_tree.board_size
 
         # Decide between sequential and parallel analysis
-        if self.num_threads <= 1 or not all([katago_path, config_path, model_path]):
-            # Sequential analysis (single-threaded)
-            return self._analyze_sequential(
-                main_line, board_size, max_visits, progress_callback
-            )
-        else:
-            # Parallel analysis (multi-threaded)
-            print(f"Using {self.num_threads} parallel analysis threads")
-            return self._analyze_parallel(
-                main_line, board_size, max_visits, progress_callback,
-                katago_path, config_path, model_path, analysis_timeout
-            )
+        # Note: Parallel analysis disabled in kata-analyze mode for simplicity
+        # Always use sequential analysis
+        return self._analyze_sequential(
+            main_line, board_size, max_visits, progress_callback
+        )
 
     def _analyze_sequential(
         self,
@@ -148,9 +141,14 @@ class GameAnalyzer:
         """
         results = []
 
-        # Set up board
-        self.primary_engine.set_board_size(board_size)
-        self.primary_engine.clear_board()
+        # Get komi from game tree (if available, otherwise use default)
+        komi = 7.5  # Default
+        if hasattr(main_line[0], 'properties'):
+            komi_str = main_line[0].properties.get('KM', '7.5')
+            try:
+                komi = float(komi_str)
+            except (ValueError, TypeError):
+                komi = 7.5
 
         # Analyze each move
         for i, node in enumerate(main_line):
@@ -161,42 +159,48 @@ class GameAnalyzer:
             if node.move is None and not node.is_pass:
                 continue
 
+            # Build move list up to this position (not including current move)
+            moves_gtp = []
+            for j in range(i):
+                prev_node = main_line[j]
+                if prev_node.is_pass:
+                    moves_gtp.append('pass')
+                elif prev_node.move:
+                    gtp_move = KataGoEngine.coords_to_gtp(prev_node.move[0], prev_node.move[1], board_size)
+                    moves_gtp.append(gtp_move)
+
+            # Determine who plays next (the player who makes move i)
+            initial_player = 'B'
+            next_player = 'B' if len(moves_gtp) % 2 == 0 else 'W'
+
             # Get analysis before the move
             import time
             start_time = time.time()
-            print(f"Analyzing move {i}/{len(main_line)}...")
-            analysis_data = self.primary_engine.analyze_position(max_visits)
+            analysis_data = self.primary_engine.analyze_position(
+                moves=moves_gtp,
+                board_size=board_size,
+                komi=komi,
+                initial_player=initial_player,
+                max_visits=max_visits
+            )
             elapsed = time.time() - start_time
-            print(f"Move {i} completed in {elapsed:.1f}s")
+            print(f"Analyzing move {i}/{len(main_line)} - {elapsed:.1f}s")
 
             if analysis_data is None:
                 print(f"WARNING: Move {i} returned None (likely timeout)")
                 continue
 
-            # Parse and create analysis
+            # Parse and create analysis - pass main_line and move_index for state restoration
             pos_analysis = self._create_position_analysis(
-                i, node, analysis_data, board_size
+                i, node, analysis_data, board_size, self.primary_engine, max_visits,
+                main_line=main_line, move_index=i, komi=komi
             )
 
-            # Debug: Print what we got
+            # Report errors
             if pos_analysis.is_error:
-                print(f"DEBUG: Error detected at move {i}: point_loss={pos_analysis.point_loss:.1f}")
-            elif i < 5:  # Print first few moves for debugging
-                if pos_analysis.played_move_analysis and pos_analysis.top_moves:
-                    best = pos_analysis.top_moves[0]
-                    played = pos_analysis.played_move_analysis
-                    print(f"DEBUG Move {i}: Best Score={best.score_lead:.1f}, Played Score={played.score_lead:.1f}, Loss={pos_analysis.point_loss:.1f}")
+                print(f"  Error detected: -{pos_analysis.point_loss:.1f} points")
 
             results.append(pos_analysis)
-
-            # Play the move on the engine's board
-            if node.is_pass:
-                color = 'B' if node.color == Stone.BLACK else 'W'
-                self.primary_engine.play_move(color, 'pass')
-            elif node.move:
-                color = 'B' if node.color == Stone.BLACK else 'W'
-                gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1], board_size)
-                self.primary_engine.play_move(color, gtp_move)
 
         return results
 
@@ -260,32 +264,29 @@ class GameAnalyzer:
                     engine.clear_board()
 
                     # Replay moves up to this position
+                    replay_failed = False
                     for j in range(move_index):
                         prev_node = main_line[j]
                         if prev_node.is_pass:
                             color = 'B' if prev_node.color == Stone.BLACK else 'W'
                             success = engine.play_move(color, 'pass')
                             if not success:
-                                print(f"WARNING: Failed to replay pass at move {j}")
+                                print(f"WARNING: Failed to replay pass at move {j} for position {move_index}")
+                                replay_failed = True
+                                break
                         elif prev_node.move:
                             color = 'B' if prev_node.color == Stone.BLACK else 'W'
                             gtp_move = KataGoEngine.coords_to_gtp(prev_node.move[0], prev_node.move[1], board_size)
                             success = engine.play_move(color, gtp_move)
                             if not success:
-                                print(f"WARNING: Failed to replay move {j} ({gtp_move})")
-                                # Try to recover by clearing and restarting
-                                engine.clear_board()
-                                # Re-replay from the beginning
-                                for k in range(j + 1):
-                                    retry_node = main_line[k]
-                                    if retry_node.is_pass:
-                                        retry_color = 'B' if retry_node.color == Stone.BLACK else 'W'
-                                        engine.play_move(retry_color, 'pass')
-                                    elif retry_node.move:
-                                        retry_color = 'B' if retry_node.color == Stone.BLACK else 'W'
-                                        retry_gtp = KataGoEngine.coords_to_gtp(retry_node.move[0], retry_node.move[1], board_size)
-                                        engine.play_move(retry_color, retry_gtp)
+                                print(f"WARNING: Failed to replay move {j} ({gtp_move}) for position {move_index}")
+                                replay_failed = True
                                 break
+
+                    # If replay failed, abort this position
+                    if replay_failed:
+                        print(f"ERROR: Cannot analyze move {move_index} - replay failed. Skipping.")
+                        return None
 
                     # Analyze the position before this move
                     analysis_data = engine.analyze_position(max_visits)
@@ -298,8 +299,9 @@ class GameAnalyzer:
                     return None
 
                 # Create analysis
+                # Don't pass engine in parallel mode to avoid state corruption
                 pos_analysis = self._create_position_analysis(
-                    move_index, node, analysis_data, board_size
+                    move_index, node, analysis_data, board_size, None, max_visits
                 )
 
                 # Update progress
@@ -350,7 +352,12 @@ class GameAnalyzer:
         move_number: int,
         node: GameNode,
         analysis_data: Dict[str, Any],
-        board_size: int
+        board_size: int,
+        engine: KataGoEngine = None,
+        max_visits: int = 200,
+        main_line: List[GameNode] = None,
+        move_index: int = None,
+        komi: float = 7.5
     ) -> PositionAnalysis:
         """Create PositionAnalysis from raw analysis data.
 
@@ -359,18 +366,17 @@ class GameAnalyzer:
             node: Game node
             analysis_data: Raw analysis from engine
             board_size: Board size
+            engine: KataGo engine (for analyzing unplayed moves)
+            max_visits: Max visits for additional analysis
+            main_line: Full game line (for state restoration)
+            move_index: Current move index in main_line (for state restoration)
+            komi: Komi value
 
         Returns:
             PositionAnalysis object
         """
         # Parse top moves
         top_moves = self._parse_move_candidates(analysis_data, board_size)
-
-        # Debug: Show what we parsed
-        if move_number < 3:
-            print(f"DEBUG: Move {move_number} - Parsed {len(top_moves)} candidates")
-            for i, m in enumerate(top_moves[:3]):
-                print(f"  {i+1}. Move={m.move}, Score={m.score_lead:.2f}, Order={m.order}")
 
         # Find the played move in the analysis
         played_move_analysis = None
@@ -382,12 +388,63 @@ class GameAnalyzer:
                 played_move_analysis = move_analysis
                 break
 
-        # Debug: Did we find the played move?
-        if move_number < 3:
-            if played_move_analysis:
-                print(f"DEBUG: Found played move in candidates at order={played_move_analysis.order}")
-            else:
-                print(f"DEBUG: WARNING - Played move NOT found in candidates! Node move={node.move}, is_pass={node.is_pass}")
+        # If played move not in candidates, log it
+        if not played_move_analysis and node.move and not node.is_pass:
+            print(f"WARNING: Move {move_number} was NOT analyzed by KataGo! Move={node.move}")
+
+        # If played move not in candidates and we have an engine, analyze it specifically
+        if not played_move_analysis and engine and node.move and not node.is_pass and main_line is not None and move_index is not None:
+            print(f"  Analyzing played move specifically...")
+            try:
+                # Build move list including the played move
+                moves_with_played = []
+                for j in range(move_index):
+                    prev_node = main_line[j]
+                    if prev_node.is_pass:
+                        moves_with_played.append('pass')
+                    elif prev_node.move:
+                        gtp_move = KataGoEngine.coords_to_gtp(prev_node.move[0], prev_node.move[1], board_size)
+                        moves_with_played.append(gtp_move)
+
+                # Add the played move
+                gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1], board_size)
+                moves_with_played.append(gtp_move)
+
+                # Determine initial player
+                initial_player = 'B'
+
+                # Analyze from opponent's perspective (after this move)
+                opponent_analysis = engine.analyze_position(
+                    moves=moves_with_played,
+                    board_size=board_size,
+                    komi=komi,
+                    initial_player=initial_player,
+                    max_visits=max_visits
+                )
+
+                if opponent_analysis and 'moveInfos' in opponent_analysis:
+                    # Get the best move from opponent's perspective
+                    opponent_moves = self._parse_move_candidates(opponent_analysis, board_size)
+
+                    if opponent_moves:
+                        # Opponent's best score, negated, is our played move's score
+                        opponent_best_score = opponent_moves[0].score_lead
+                        our_score = -opponent_best_score
+
+                        # Create a MoveAnalysis for the played move
+                        played_move_analysis = MoveAnalysis(
+                            move=node.move,
+                            is_pass=False,
+                            win_rate=0.5,  # We don't have this, use neutral
+                            score_lead=our_score,
+                            visits=0,
+                            order=999  # Not in original ranking
+                        )
+
+                        print(f"  Played move score: {our_score:.1f}")
+
+            except Exception as e:
+                print(f"  Error analyzing played move: {e}")
 
         # Calculate point loss
         point_loss = 0.0
@@ -400,15 +457,8 @@ class GameAnalyzer:
             score_diff = abs(best_move.score_lead - played_move_analysis.score_lead)
             point_loss = score_diff
 
-            # Debug output for first few moves AND any significant differences
-            if move_number < 3 or score_diff > 1.0:
-                print(f"DEBUG Move {move_number}: Best={best_move.move} Score={best_move.score_lead:.1f}, Played={played_move_analysis.move if not played_move_analysis.is_pass else 'pass'} Score={played_move_analysis.score_lead:.1f}")
-                print(f"  Point loss={point_loss:.1f}, Threshold={self.error_threshold}, Is Error={point_loss >= self.error_threshold}")
-
             if point_loss >= self.error_threshold:
                 is_error = True
-        elif move_number < 3:
-            print(f"DEBUG: Cannot calculate point loss - played_move_analysis={played_move_analysis is not None}, top_moves={len(top_moves) if top_moves else 0}")
 
         # Create position analysis
         return PositionAnalysis(
@@ -436,29 +486,36 @@ class GameAnalyzer:
         Returns:
             Position analysis or None
         """
-        # Set up board to the position
+        # Build move list up to the position
         board_size = game_tree.board_size
-        self.primary_engine.set_board_size(board_size)
-        self.primary_engine.clear_board()
+        komi = game_tree.get_komi()
 
-        # Play moves up to the position
-        game_tree.go_to_root()
-        for _ in range(move_number):
-            if not game_tree.go_to_next():
-                return None
+        # Get main line
+        main_line = game_tree.get_main_line()
+        if move_number >= len(main_line):
+            return None
 
-            node = game_tree.current
-
+        # Build move list
+        moves_gtp = []
+        for i in range(move_number):
+            node = main_line[i]
             if node.is_pass:
-                color = 'B' if node.color == Stone.BLACK else 'W'
-                self.primary_engine.play_move(color, 'pass')
+                moves_gtp.append('pass')
             elif node.move:
-                color = 'B' if node.color == Stone.BLACK else 'W'
                 gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1], board_size)
-                self.primary_engine.play_move(color, gtp_move)
+                moves_gtp.append(gtp_move)
+
+        # Determine initial player
+        initial_player = 'B'
 
         # Analyze position
-        analysis_data = self.primary_engine.analyze_position(max_visits)
+        analysis_data = self.primary_engine.analyze_position(
+            moves=moves_gtp,
+            board_size=board_size,
+            komi=komi,
+            initial_player=initial_player,
+            max_visits=max_visits
+        )
 
         if analysis_data is None:
             return None
@@ -467,13 +524,12 @@ class GameAnalyzer:
         top_moves = self._parse_move_candidates(analysis_data, board_size)
 
         # Get current node
-        node = game_tree.current
+        node = main_line[move_number] if move_number < len(main_line) else None
 
         # Find played move
         played_move_analysis = None
-        if game_tree.has_next():
-            game_tree.go_to_next()
-            next_node = game_tree.current
+        if move_number + 1 < len(main_line):
+            next_node = main_line[move_number + 1]
 
             for move_analysis in top_moves:
                 if next_node.is_pass and move_analysis.is_pass:
@@ -482,8 +538,6 @@ class GameAnalyzer:
                 elif next_node.move == move_analysis.move:
                     played_move_analysis = move_analysis
                     break
-
-            game_tree.go_to_previous()
 
         # Create analysis
         pos_analysis = PositionAnalysis(
