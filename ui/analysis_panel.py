@@ -146,7 +146,41 @@ class AnalysisPanel(tk.Frame):
             score_str = f"{score:+.1f}"
 
             # Create line showing move and score
-            line = f"{rank}. {move_str:5s} | Score: {score_str:6s}\n"
+            line = f"{rank}. {move_str:5s} | Score: {score_str:6s}"
+
+            # Add principal variation (first 5 moves after the move itself)
+            if move.pv and len(move.pv) > 0:
+                pv_moves = []
+                # Skip the first move if it matches the current move (it's the move itself)
+                start_index = 0
+                if move.pv[0].lower() != 'pass' and move.move:
+                    try:
+                        from katago.engine import KataGoEngine
+                        first_pv_coords = KataGoEngine.gtp_to_coords(move.pv[0], self.board_size)
+                        if first_pv_coords == move.move:
+                            start_index = 1  # Skip the first move
+                    except:
+                        pass
+
+                for pv_move_str in move.pv[start_index:start_index+5]:  # Show 5 moves after skipping first
+                    if pv_move_str.lower() == 'pass':
+                        pv_moves.append('pass')
+                    else:
+                        # Convert GTP move to readable format
+                        try:
+                            from katago.engine import KataGoEngine
+                            pv_row, pv_col = KataGoEngine.gtp_to_coords(pv_move_str, self.board_size)
+                            pv_col_letter = chr(ord('A') + pv_col if pv_col < 8 else ord('A') + pv_col + 1)
+                            pv_row_num = self.board_size - pv_row
+                            pv_moves.append(f"{pv_col_letter}{pv_row_num}")
+                        except:
+                            pv_moves.append(pv_move_str)
+
+                if pv_moves:
+                    pv_str = ' '.join(pv_moves)
+                    line += f" → {pv_str}"
+
+            line += "\n"
 
             # Highlight if this is the played move - handle both regular moves and passes
             if analysis.played_move_analysis:
@@ -180,12 +214,48 @@ class AnalysisPanel(tk.Frame):
 
             line = f">>> Played: {move_str:5s} | Score: {score_str:6s}"
 
+            # Add point loss
+            if analysis.point_loss > 0:
+                line += f" (-{analysis.point_loss:.1f})"
+
+            # Add PV for played move if available
+            if analysis.played_move_analysis.pv and len(analysis.played_move_analysis.pv) > 0:
+                pv_moves = []
+                # Skip the first move if it matches the played move (it's the move itself)
+                start_index = 0
+                if (analysis.played_move_analysis.pv[0].lower() != 'pass' and
+                    analysis.played_move_analysis.move):
+                    try:
+                        from katago.engine import KataGoEngine
+                        first_pv_coords = KataGoEngine.gtp_to_coords(
+                            analysis.played_move_analysis.pv[0],
+                            self.board_size
+                        )
+                        if first_pv_coords == analysis.played_move_analysis.move:
+                            start_index = 1  # Skip the first move
+                    except:
+                        pass
+
+                for pv_move_str in analysis.played_move_analysis.pv[start_index:start_index+5]:
+                    if pv_move_str.lower() == 'pass':
+                        pv_moves.append('pass')
+                    else:
+                        try:
+                            from katago.engine import KataGoEngine
+                            pv_row, pv_col = KataGoEngine.gtp_to_coords(pv_move_str, self.board_size)
+                            pv_col_letter = chr(ord('A') + pv_col if pv_col < 8 else ord('A') + pv_col + 1)
+                            pv_row_num = self.board_size - pv_row
+                            pv_moves.append(f"{pv_col_letter}{pv_row_num}")
+                        except:
+                            pv_moves.append(pv_move_str)
+
+                if pv_moves:
+                    pv_str = ' '.join(pv_moves)
+                    line += f" → {pv_str}"
+
             # Color: red if error, green if just not in top 5 but not an error
             tag_name = "played_move_error" if analysis.is_error else "played_move_ok"
             self.top_moves_text.insert(tk.END, line, tag_name)
-
-            if analysis.point_loss > 0:
-                self.top_moves_text.insert(tk.END, f" (-{analysis.point_loss:.1f})", tag_name)
 
         # Show point loss if in top 5
         elif analysis.point_loss > 0 and played_in_top_5:

@@ -1,7 +1,7 @@
 """KataGo analysis for move evaluation and error detection."""
 
 from typing import List, Dict, Any, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 from game.game_tree import GameTree, GameNode
@@ -18,6 +18,7 @@ class MoveAnalysis:
     score_lead: float
     visits: int
     order: int  # Ranking (0 = best)
+    pv: List[str] = field(default_factory=list)  # Principal variation (list of GTP moves)
 
 
 @dataclass
@@ -150,6 +151,43 @@ class GameAnalyzer:
             except (ValueError, TypeError):
                 komi = 7.5
 
+        # Extract handicap/setup stones from root node
+        initial_stones = []
+        if main_line and main_line[0].properties:
+            root_props = main_line[0].properties
+
+            # Add Black handicap stones (AB property)
+            if 'AB' in root_props:
+                ab_values = root_props['AB']
+                if isinstance(ab_values, list):
+                    for stone_pos in ab_values:
+                        if stone_pos and len(stone_pos) == 2:
+                            try:
+                                # Convert SGF coords (aa-ss) to row, col
+                                row = ord(stone_pos[1]) - ord('a')
+                                col = ord(stone_pos[0]) - ord('a')
+                                # Convert to GTP format
+                                gtp_move = KataGoEngine.coords_to_gtp(row, col, board_size)
+                                initial_stones.append(["B", gtp_move])
+                            except Exception as e:
+                                print(f"Error converting handicap stone {stone_pos}: {e}")
+
+            # Add White setup stones (AW property)
+            if 'AW' in root_props:
+                aw_values = root_props['AW']
+                if isinstance(aw_values, list):
+                    for stone_pos in aw_values:
+                        if stone_pos and len(stone_pos) == 2:
+                            try:
+                                # Convert SGF coords (aa-ss) to row, col
+                                row = ord(stone_pos[1]) - ord('a')
+                                col = ord(stone_pos[0]) - ord('a')
+                                # Convert to GTP format
+                                gtp_move = KataGoEngine.coords_to_gtp(row, col, board_size)
+                                initial_stones.append(["W", gtp_move])
+                            except Exception as e:
+                                print(f"Error converting setup stone {stone_pos}: {e}")
+
         # Analyze each move
         for i, node in enumerate(main_line):
             if progress_callback:
@@ -181,7 +219,8 @@ class GameAnalyzer:
                 board_size=board_size,
                 komi=komi,
                 initial_player=initial_player,
-                max_visits=max_visits
+                max_visits=max_visits,
+                initial_stones=initial_stones if initial_stones else None
             )
             elapsed = time.time() - start_time
             print(f"Analyzing move {i}/{len(main_line)} - {elapsed:.1f}s")
@@ -431,6 +470,10 @@ class GameAnalyzer:
                         opponent_best_score = opponent_moves[0].score_lead
                         our_score = -opponent_best_score
 
+                        # The opponent's PV already includes their best move as the first element
+                        # So we can just use it directly
+                        our_pv = opponent_moves[0].pv if opponent_moves[0].pv else []
+
                         # Create a MoveAnalysis for the played move
                         played_move_analysis = MoveAnalysis(
                             move=node.move,
@@ -438,10 +481,12 @@ class GameAnalyzer:
                             win_rate=0.5,  # We don't have this, use neutral
                             score_lead=our_score,
                             visits=0,
-                            order=999  # Not in original ranking
+                            order=999,  # Not in original ranking
+                            pv=our_pv
                         )
 
                         print(f"  Played move score: {our_score:.1f}")
+                        print(f"  Played move PV: {our_pv[:5]}")
 
             except Exception as e:
                 print(f"  Error analyzing played move: {e}")
@@ -585,6 +630,7 @@ class GameAnalyzer:
             score_lead = move_info.get('scoreLead', 0.0)
             visits = move_info.get('visits', 0)
             order = move_info.get('order', i)
+            pv = move_info.get('pv', [])  # Principal variation
 
             move_analysis = MoveAnalysis(
                 move=move,
@@ -592,7 +638,8 @@ class GameAnalyzer:
                 win_rate=win_rate,
                 score_lead=score_lead,
                 visits=visits,
-                order=order
+                order=order,
+                pv=pv
             )
 
             move_analyses.append(move_analysis)

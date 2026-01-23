@@ -7,7 +7,7 @@
     "analysis_timeout": 180 
   },
   "analysis": {
-    "error_threshold": 5.0,
+    "error_threshold": 2.0,
     "top_moves_count": 5,
     "analysis_threads": 1
   },

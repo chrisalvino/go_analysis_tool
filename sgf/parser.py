@@ -183,9 +183,13 @@ class SGFParser:
             # Store property
             if prop_id == 'SZ':
                 properties[prop_id] = int(values[0]) if values else 19
-            elif prop_id in ('B', 'W', 'AB', 'AW', 'AE'):
+            elif prop_id in ('B', 'W'):
+                # Single move properties
                 properties[prop_id] = values[0] if values else ''
-            elif prop_id in ('C', 'PB', 'PW', 'BR', 'WR', 'RE', 'KM', 'DT', 'EV', 'RO', 'RU'):
+            elif prop_id in ('AB', 'AW', 'AE'):
+                # Setup properties - can have multiple values
+                properties[prop_id] = values  # Store all values as list
+            elif prop_id in ('C', 'PB', 'PW', 'BR', 'WR', 'RE', 'KM', 'DT', 'EV', 'RO', 'RU', 'HA'):
                 properties[prop_id] = values[0] if values else ''
             else:
                 properties[prop_id] = values

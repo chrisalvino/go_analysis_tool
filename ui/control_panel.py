@@ -58,6 +58,10 @@ class ControlPanel(tk.Frame):
         self.move_label = tk.Label(nav_frame, text="Move: 0 / 0")
         self.move_label.pack(pady=5)
 
+        # Current player indicator
+        self.player_label = tk.Label(nav_frame, text="Next: Black ●", font=("Arial", 10, "bold"))
+        self.player_label.pack(pady=2)
+
         # Variation selector
         var_frame = tk.Frame(nav_frame)
         var_frame.pack(fill=tk.X, pady=5)
@@ -136,6 +140,17 @@ class ControlPanel(tk.Frame):
         self.first_btn.config(state=tk.NORMAL if current > 0 else tk.DISABLED)
         self.prev_btn.config(state=tk.NORMAL if current > 0 else tk.DISABLED)
         # Note: We'll update next/last based on whether there are more moves
+
+    def update_current_player(self, player: str) -> None:
+        """Update the current player indicator.
+
+        Args:
+            player: 'B' for Black or 'W' for White
+        """
+        if player == 'B' or player == 'BLACK':
+            self.player_label.config(text="Next: Black ●", fg="black")
+        else:
+            self.player_label.config(text="Next: White ○", fg="gray")
 
     def update_variations(self, count: int) -> None:
         """Update variation count.

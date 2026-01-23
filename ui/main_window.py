@@ -498,6 +498,66 @@ class GoAnalysisTool(tk.Tk):
         # Get moves from root to current
         moves = self.game_tree.current.get_main_line()
 
+        # Handle setup stones from first game node (which contains AB/AW properties)
+        # The root is just a container, the first child has the actual game properties
+        setup_node = None
+        if moves and len(moves) > 0:
+            # Check if root has children (SGF game data)
+            if self.game_tree.root.children:
+                setup_node = self.game_tree.root.children[0]
+            elif moves[0].properties:
+                setup_node = moves[0]
+
+        if setup_node and setup_node.properties:
+            root_props = setup_node.properties
+            print(f"DEBUG: Setup node properties: {list(root_props.keys())}")
+
+            # Add Black stones (AB property)
+            if 'AB' in root_props:
+                ab_values = root_props['AB']
+                print(f"DEBUG: AB values: {ab_values}, type: {type(ab_values)}")
+                if isinstance(ab_values, list):
+                    for stone_pos in ab_values:
+                        if stone_pos:
+                            try:
+                                from sgf.parser import SGFParser
+                                row, col = SGFParser._sgf_to_coords(stone_pos)
+                                print(f"DEBUG: Placing handicap stone at ({row}, {col})")
+                                self.board.set_stone(row, col, Stone.BLACK)
+                            except Exception as e:
+                                print(f"Error placing handicap stone at {stone_pos}: {e}")
+                elif ab_values:
+                    # Single value (old format)
+                    try:
+                        from sgf.parser import SGFParser
+                        row, col = SGFParser._sgf_to_coords(ab_values)
+                        self.board.set_stone(row, col, Stone.BLACK)
+                    except Exception as e:
+                        print(f"Error placing handicap stone at {ab_values}: {e}")
+            else:
+                print("DEBUG: No AB property found")
+
+            # Add White stones (AW property)
+            if 'AW' in root_props:
+                aw_values = root_props['AW']
+                if isinstance(aw_values, list):
+                    for stone_pos in aw_values:
+                        if stone_pos:
+                            try:
+                                from sgf.parser import SGFParser
+                                row, col = SGFParser._sgf_to_coords(stone_pos)
+                                self.board.set_stone(row, col, Stone.WHITE)
+                            except Exception as e:
+                                print(f"Error placing setup stone at {stone_pos}: {e}")
+                elif aw_values:
+                    # Single value (old format)
+                    try:
+                        from sgf.parser import SGFParser
+                        row, col = SGFParser._sgf_to_coords(aw_values)
+                        self.board.set_stone(row, col, Stone.WHITE)
+                    except Exception as e:
+                        print(f"Error placing setup stone at {aw_values}: {e}")
+
         # Replay each move
         for node in moves[1:]:  # Skip root
             if node.is_pass:
@@ -529,6 +589,12 @@ class GoAnalysisTool(tk.Tk):
         total_moves = len(self.game_tree.get_main_line())
 
         self.control_panel.update_move_info(current_move, total_moves)
+
+        # Update current player indicator
+        # Determine next player based on move count (Black plays on odd moves, White on even)
+        next_player = 'B' if current_move % 2 == 0 else 'W'
+        self.control_panel.update_current_player(next_player)
+
         self.control_panel.set_navigation_enabled(
             self.game_tree.has_previous(),
             self.game_tree.has_next()
@@ -760,6 +826,26 @@ class GoAnalysisTool(tk.Tk):
             print(f"Error capturing screenshot: {e}")
             return False
 
+    def _categorize_error(self, point_loss: float) -> str:
+        """Categorize error by point loss.
+
+        Args:
+            point_loss: Point loss value
+
+        Returns:
+            Subfolder name for this error category
+        """
+        if point_loss >= 10.0:
+            return "blunders"
+        elif point_loss >= 7.0:
+            return "errors"
+        elif point_loss >= 5.0:
+            return "mistakes"
+        elif point_loss >= 2.0:
+            return "inaccuracies"
+        else:
+            return "other"  # Fallback for errors below 2.0 points
+
     def _dump_error_screenshots(self) -> None:
         """Dump screenshots for all error positions after analysis."""
         if not self.analysis_results or not self.current_sgf_path:
@@ -772,9 +858,9 @@ class GoAnalysisTool(tk.Tk):
         sgf_basename = os.path.basename(self.current_sgf_path)
         sgf_name = os.path.splitext(sgf_basename)[0]
 
-        # Create output directory
+        # Create base output directory
         sgf_dir = os.path.dirname(self.current_sgf_path)
-        output_dir = os.path.join(sgf_dir, sgf_name)
+        base_output_dir = os.path.join(sgf_dir, sgf_name)
 
         # Extract errors
         errors = [(a.move_number, a.played_move, a.point_loss)
@@ -785,32 +871,48 @@ class GoAnalysisTool(tk.Tk):
             messagebox.showinfo("Screenshots", "No errors found to screenshot.")
             return
 
-        print(f"Dumping {len(errors)} error screenshots to {output_dir}/")
+        print(f"Dumping {len(errors)} error screenshots to {base_output_dir}/")
 
         # Switch to analysis mode for proper display
         original_mode = self.play_mode
         if self.play_mode:
             self._set_analysis_mode()
 
+        # Categorize errors and create subfolders
+        error_categories = {}
+        for move_num, move_pos, point_loss in errors:
+            category = self._categorize_error(point_loss)
+            if category not in error_categories:
+                error_categories[category] = []
+            error_categories[category].append((move_num, move_pos, point_loss))
+
+        # Create category subfolders
+        for category in error_categories.keys():
+            category_dir = os.path.join(base_output_dir, category)
+            os.makedirs(category_dir, exist_ok=True)
+
         # Capture screenshot for each error
         success_count = 0
-        for move_num, move_pos, point_loss in errors:
-            # Jump to error position
-            if self.game_tree.go_to_move_number(move_num):
-                self._replay_to_current()
-                self._update_display()
+        for category, category_errors in error_categories.items():
+            category_dir = os.path.join(base_output_dir, category)
 
-                # Give UI time to update
-                self.update_idletasks()
-                self.update()
+            for move_num, move_pos, point_loss in category_errors:
+                # Jump to error position
+                if self.game_tree.go_to_move_number(move_num):
+                    self._replay_to_current()
+                    self._update_display()
 
-                # Generate filename
-                filename = f"move_{move_num:03d}_loss_{point_loss:.1f}pts.png"
-                output_path = os.path.join(output_dir, filename)
+                    # Give UI time to update
+                    self.update_idletasks()
+                    self.update()
 
-                # Capture screenshot
-                if self._capture_screenshot(output_path):
-                    success_count += 1
+                    # Generate filename
+                    filename = f"move_{move_num:03d}_loss_{point_loss:.1f}pts.png"
+                    output_path = os.path.join(category_dir, filename)
+
+                    # Capture screenshot
+                    if self._capture_screenshot(output_path):
+                        success_count += 1
 
         # Restore original mode
         if original_mode:
@@ -818,10 +920,17 @@ class GoAnalysisTool(tk.Tk):
 
         print(f"Screenshot dump complete: {success_count}/{len(errors)} images saved")
 
+        # Build summary message
+        summary = f"Saved {success_count} error screenshots to:\n{base_output_dir}/\n\n"
+        summary += "Categories:\n"
+        for category in sorted(error_categories.keys()):
+            count = len(error_categories[category])
+            summary += f"  {category}: {count} error(s)\n"
+
         # Show completion message with path
         messagebox.showinfo(
             "Screenshots Complete",
-            f"Saved {success_count} error screenshots to:\n\n{output_dir}/"
+            summary
         )
 
     def destroy(self) -> None:
