@@ -729,12 +729,13 @@ class GoAnalysisTool(tk.Tk):
                 errors = [(a.move_number, a.played_move, a.point_loss)
                          for a in results if a.is_error]
 
-                # Extract tsumego positions (clear best move > 7 points better than 2nd best)
+                # Extract tsumego positions (clear best move > threshold points better than 2nd best)
+                tsumego_threshold = self.app_config.get_tsumego_threshold()
                 tsumego_positions = []
                 for a in results:
                     if len(a.top_moves) >= 2:
                         gap = abs(a.top_moves[0].score_lead - a.top_moves[1].score_lead)
-                        if gap > 7.0:
+                        if gap > tsumego_threshold:
                             tsumego_positions.append((a.move_number, gap))
 
                 # Update UI

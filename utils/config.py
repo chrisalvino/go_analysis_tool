@@ -19,7 +19,8 @@ class Config:
         'analysis': {
             'error_threshold': 3.0,
             'top_moves_count': 5,
-            'analysis_threads': 3  # Number of parallel analysis threads
+            'analysis_threads': 3,  # Number of parallel analysis threads
+            'tsumego_threshold': 7.0  # Point gap threshold for tsumego detection
         },
         'ui': {
             'board_size': 19,
@@ -145,6 +146,14 @@ class Config:
             Error threshold in points
         """
         return self.get('analysis', 'error_threshold', 3.0)
+
+    def get_tsumego_threshold(self) -> float:
+        """Get tsumego detection threshold.
+
+        Returns:
+            Tsumego threshold in points
+        """
+        return self.get('analysis', 'tsumego_threshold', 7.0)
 
     def get_analysis_threads(self) -> int:
         """Get number of parallel analysis threads.
