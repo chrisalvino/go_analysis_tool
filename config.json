@@ -9,7 +9,8 @@
   "analysis": {
     "error_threshold": 2.0,
     "top_moves_count": 5,
-    "analysis_threads": 1
+    "analysis_threads": 1,
+    "tsumego_threshold": 7.0
   },
   "ui": {
     "board_size": 19,
