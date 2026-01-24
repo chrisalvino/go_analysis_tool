@@ -129,12 +129,21 @@ class ControlPanel(tk.Frame):
         """Update move information display.
 
         Args:
-            current: Current move number
-            total: Total moves
+            current: Current move number (1-based, 0 for root)
+            total: Total actual moves (excluding root and metadata nodes)
         """
         self.current_move = current
         self.total_moves = total
-        self.move_label.config(text=f"Move: {current} / {total}")
+
+        # Display move numbers (move 0 = root/no moves, move 1+ = actual moves)
+        if current == 0:
+            display_current = "-"
+            display_total = "-" if total == 0 else total
+        else:
+            display_current = current
+            display_total = total
+
+        self.move_label.config(text=f"Move: {display_current} / {display_total}")
 
         # Update button states
         self.first_btn.config(state=tk.NORMAL if current > 0 else tk.DISABLED)

@@ -223,15 +223,24 @@ class GameAnalyzer:
                 initial_stones=initial_stones if initial_stones else None
             )
             elapsed = time.time() - start_time
-            print(f"Analyzing move {i}/{len(main_line)} - {elapsed:.1f}s")
+
+            # Use move_number (counts actual moves) instead of index for display
+            # to avoid confusion with analysis results
+            display_move_num = node.get_move_number()
+            total_moves = sum(1 for n in main_line if n.move is not None or n.is_pass)
+            print(f"Analyzing move {display_move_num}/{total_moves} - {elapsed:.1f}s")
 
             if analysis_data is None:
                 print(f"WARNING: Move {i} returned None (likely timeout)")
                 continue
 
+            # Use the move number from the node being analyzed
+            # This represents which move's options we're analyzing
+            move_number = node.get_move_number()
+
             # Parse and create analysis - pass main_line and move_index for state restoration
             pos_analysis = self._create_position_analysis(
-                i, node, analysis_data, board_size, self.primary_engine, max_visits,
+                move_number, node, analysis_data, board_size, self.primary_engine, max_visits,
                 main_line=main_line, move_index=i, komi=komi
             )
 

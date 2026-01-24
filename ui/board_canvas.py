@@ -84,9 +84,8 @@ class BoardCanvas(tk.Canvas):
         self._draw_star_points()
         self._draw_coordinates()
         self._draw_stones()
-        self._draw_last_move_marker()
-        self._draw_error_markers()
-        self._draw_move_candidates()
+        self._draw_last_move_marker()      # Circle inside last stone
+        self._draw_move_candidates()       # Numbers 1-5
 
     def _draw_grid(self) -> None:
         """Draw the board grid."""
@@ -180,19 +179,35 @@ class BoardCanvas(tk.Canvas):
         )
 
     def _draw_last_move_marker(self) -> None:
-        """Draw a marker on the last move."""
+        """Draw an inverse-colored ring on the last played stone."""
         if self.last_move is not None:
             row, col = self.last_move
             x = self.margin + col * self.cell_size
             y = self.margin + row * self.cell_size
-            radius = 5
 
-            # Red circle marker
+            # Ring dimensions
+            outer_radius = 9   # Outer edge of ring (20% smaller)
+            ring_width = 3     # Thickness of ring (creates inner radius of ~6)
+
+            # Get the stone color at this position
+            stone = self.board.get_stone(row, col)
+
+            # Determine ring color (inverse of stone color)
+            if stone == Stone.BLACK:
+                ring_color = 'white'
+            elif stone == Stone.WHITE:
+                ring_color = 'black'
+            else:
+                # No stone here (shouldn't happen for last move, but handle gracefully)
+                ring_color = 'red'
+
+            # Draw ring (hollow circle) using outline
             self.create_oval(
-                x - radius, y - radius,
-                x + radius, y + radius,
-                outline='red',
-                width=2,
+                x - outer_radius, y - outer_radius,
+                x + outer_radius, y + outer_radius,
+                fill='',              # Empty fill creates hollow center
+                outline=ring_color,   # Ring color on the edge
+                width=ring_width,     # Thickness of the ring
                 tags='marker'
             )
 
@@ -218,38 +233,75 @@ class BoardCanvas(tk.Canvas):
         for row, col, rank in self.top_move_candidates:
             x = self.margin + col * self.cell_size
             y = self.margin + row * self.cell_size
-            radius = 12
 
-            # Draw circle with rank number
-            # Color: Green for #1, fading to yellow/orange for lower ranks
-            if rank == 0:
-                color = '#00CC00'  # Bright green for best move
-            elif rank == 1:
-                color = '#66CC00'  # Green-yellow
-            elif rank == 2:
-                color = '#CCCC00'  # Yellow
-            elif rank == 3:
-                color = '#CC9900'  # Orange
-            else:
-                color = '#CC6600'  # Dark orange
+            # Determine text color and font size based on what's at this position
+            stone = self.board.get_stone(row, col)
 
-            # Draw circle
-            self.create_oval(
-                x - radius, y - radius,
-                x + radius, y + radius,
-                outline=color,
-                width=3,
-                tags='candidate'
-            )
+            if stone == Stone.EMPTY:
+                # Empty intersection: large font with gridline fading
+                text_color = 'black'
+                font_size = 24
+                self._fade_gridlines_at(row, col)
+            elif stone == Stone.BLACK:
+                # Black stone: smaller white text
+                text_color = 'white'
+                font_size = 12
+            else:  # Stone.WHITE
+                # White stone: smaller black text
+                text_color = 'black'
+                font_size = 12
 
-            # Draw rank number
+            # Draw rank number (1-5)
             self.create_text(
                 x, y,
                 text=str(rank + 1),  # Display as 1-5 instead of 0-4
-                font=('Arial', 12, 'bold'),
-                fill=color,
+                font=('Arial', font_size, 'bold'),
+                fill=text_color,
                 tags='candidate'
             )
+
+    def _fade_gridlines_at(self, row: int, col: int) -> None:
+        """Fade the gridlines near a specific intersection.
+
+        Args:
+            row: Row index
+            col: Column index
+        """
+        x = self.margin + col * self.cell_size
+        y = self.margin + row * self.cell_size
+
+        # Fade radius: ~half a cell
+        fade_distance = self.cell_size // 2
+
+        # Light gray color for faded gridlines
+        fade_color = '#CCCCCC'
+        fade_width = 2  # Slightly thicker to cover the black line
+
+        # Calculate board bounds
+        board_min = self.margin
+        board_max = self.margin + (self.board.size - 1) * self.cell_size
+
+        # Fade horizontal gridline segment passing through this intersection
+        # Draw from (x - fade_distance) to (x + fade_distance) at y-coordinate
+        h_x1 = max(board_min, x - fade_distance)
+        h_x2 = min(board_max, x + fade_distance)
+        self.create_line(
+            h_x1, y, h_x2, y,
+            fill=fade_color,
+            width=fade_width,
+            tags='candidate'
+        )
+
+        # Fade vertical gridline segment passing through this intersection
+        # Draw from (y - fade_distance) to (y + fade_distance) at x-coordinate
+        v_y1 = max(board_min, y - fade_distance)
+        v_y2 = min(board_max, y + fade_distance)
+        self.create_line(
+            x, v_y1, x, v_y2,
+            fill=fade_color,
+            width=fade_width,
+            tags='candidate'
+        )
 
     def set_last_move(self, row: int, col: int) -> None:
         """Set the last move position.

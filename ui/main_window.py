@@ -223,6 +223,12 @@ class GoAnalysisTool(tk.Tk):
 
                 # Replay to current position
                 self.game_tree.go_to_root()
+                # Skip to first actual move (skip root and any metadata nodes)
+                while self.game_tree.current.children:
+                    self.game_tree.go_to_next()
+                    # Stop if we reach a node with an actual move
+                    if self.game_tree.current.move is not None or self.game_tree.current.is_pass:
+                        break
                 self._replay_to_current()
 
                 self._update_display()
@@ -405,9 +411,7 @@ class GoAnalysisTool(tk.Tk):
         self.mode_var.set("play")
         self.control_panel.set_play_mode(True)
         self.board_canvas.set_preview_stone(self.current_player)
-        # Clear top move candidates and error markers in play mode
-        self.board_canvas.set_top_move_candidates([])
-        self.board_canvas.set_error_moves(set())
+        # Don't clear analysis overlays - let them show in both modes
 
     def _set_analysis_mode(self) -> None:
         """Switch to analysis mode."""
@@ -467,8 +471,16 @@ class GoAnalysisTool(tk.Tk):
     def _go_previous(self) -> None:
         """Go to previous move."""
         if self.game_tree.go_to_previous():
-            self._replay_to_current()
-            self._update_display()
+            # Check if we ended up at root (move 0)
+            if self.game_tree.current.parent is None:
+                # We're at root, don't allow this - go back to move 1
+                self.game_tree.go_to_next()
+                # CRITICAL: Must replay and update display after moving forward!
+                self._replay_to_current()
+                self._update_display()
+            else:
+                self._replay_to_current()
+                self._update_display()
 
     def _go_next(self) -> None:
         """Go to next move."""
@@ -477,8 +489,14 @@ class GoAnalysisTool(tk.Tk):
             self._update_display()
 
     def _go_first(self) -> None:
-        """Go to first move."""
+        """Go to first move (skip root and metadata nodes)."""
         self.game_tree.go_to_root()
+        # Skip to first actual move (skip root and any metadata nodes)
+        while self.game_tree.current.children:
+            self.game_tree.go_to_next()
+            # Stop if we reach a node with an actual move
+            if self.game_tree.current.move is not None or self.game_tree.current.is_pass:
+                break
         self._replay_to_current()
         self._update_display()
 
@@ -510,19 +528,16 @@ class GoAnalysisTool(tk.Tk):
 
         if setup_node and setup_node.properties:
             root_props = setup_node.properties
-            print(f"DEBUG: Setup node properties: {list(root_props.keys())}")
 
             # Add Black stones (AB property)
             if 'AB' in root_props:
                 ab_values = root_props['AB']
-                print(f"DEBUG: AB values: {ab_values}, type: {type(ab_values)}")
                 if isinstance(ab_values, list):
                     for stone_pos in ab_values:
                         if stone_pos:
                             try:
                                 from sgf.parser import SGFParser
                                 row, col = SGFParser._sgf_to_coords(stone_pos)
-                                print(f"DEBUG: Placing handicap stone at ({row}, {col})")
                                 self.board.set_stone(row, col, Stone.BLACK)
                             except Exception as e:
                                 print(f"Error placing handicap stone at {stone_pos}: {e}")
@@ -534,8 +549,6 @@ class GoAnalysisTool(tk.Tk):
                         self.board.set_stone(row, col, Stone.BLACK)
                     except Exception as e:
                         print(f"Error placing handicap stone at {ab_values}: {e}")
-            else:
-                print("DEBUG: No AB property found")
 
             # Add White stones (AW property)
             if 'AW' in root_props:
@@ -586,7 +599,9 @@ class GoAnalysisTool(tk.Tk):
 
         # Update control panel
         current_move = self.game_tree.get_current_move_number()
-        total_moves = len(self.game_tree.get_main_line())
+        # Count total actual moves in the ENTIRE game (not just up to current position)
+        total_moves = sum(1 for node in self.game_tree.get_main_line()
+                          if node.move is not None or node.is_pass)
 
         self.control_panel.update_move_info(current_move, total_moves)
 
@@ -604,13 +619,19 @@ class GoAnalysisTool(tk.Tk):
         variations = len(self.game_tree.get_variations())
         self.control_panel.update_variations(variations)
 
-        # In analysis mode, show top move candidates and analysis for current position
-        if not self.play_mode and self.analysis_results:
+        # Show analysis overlays whenever analysis exists (regardless of mode)
+        if self.analysis_results:
             self._display_current_analysis()
 
     def _display_current_analysis(self) -> None:
-        """Display analysis for the current position."""
+        """Display analysis for the current move (the move that was just played)."""
         current_move = self.game_tree.get_current_move_number()
+
+        # Skip root (move 0) - no analysis to show
+        if current_move == 0:
+            self.board_canvas.set_top_move_candidates([])
+            self.board_canvas.set_error_moves(set())
+            return
 
         # Find the analysis for this move number
         current_analysis = None

@@ -67,9 +67,18 @@ class GameNode:
         """Get the move number of this node.
 
         Returns:
-            Move number (0 for root)
+            Move number (0 for root, counts only actual moves)
         """
-        return len(self.get_main_line()) - 1
+        # Count only nodes with actual moves (not metadata-only nodes)
+        move_count = 0
+        node = self
+
+        while node.parent is not None:
+            if node.move is not None or node.is_pass:
+                move_count += 1
+            node = node.parent
+
+        return move_count
 
 
 class GameTree:
@@ -155,10 +164,14 @@ class GameTree:
             True if successful
         """
         self.go_to_root()
-        for _ in range(move_num):
+
+        # Keep going to next until we reach the target move number
+        # This handles cases where there are metadata nodes between root and moves
+        while self.get_current_move_number() < move_num:
             if not self.go_to_next():
                 return False
-        return True
+
+        return self.get_current_move_number() == move_num
 
     def get_current_move_number(self) -> int:
         """Get the current move number.
@@ -193,12 +206,12 @@ class GameTree:
         return self.current.children
 
     def get_main_line(self) -> List[GameNode]:
-        """Get all moves in the main line from root.
+        """Get all moves in the main line from root (including root).
 
         Returns:
-            List of nodes in main line
+            List of nodes in main line, starting with root
         """
-        nodes = []
+        nodes = [self.root]  # Start with root node
         node = self.root
         while node.children:
             node = node.children[0]
