@@ -729,6 +729,14 @@ class GoAnalysisTool(tk.Tk):
                 errors = [(a.move_number, a.played_move, a.point_loss)
                          for a in results if a.is_error]
 
+                # Extract tsumego positions (clear best move > 7 points better than 2nd best)
+                tsumego_positions = []
+                for a in results:
+                    if len(a.top_moves) >= 2:
+                        gap = abs(a.top_moves[0].score_lead - a.top_moves[1].score_lead)
+                        if gap > 7.0:
+                            tsumego_positions.append((a.move_number, gap))
+
                 # Update UI
                 self.after(0, lambda: self.analysis_panel.display_errors(errors))
                 # Don't highlight all errors at once - only show error for current position
@@ -737,6 +745,10 @@ class GoAnalysisTool(tk.Tk):
 
                 # Dump error screenshots
                 self.after(0, lambda: self._dump_error_screenshots())
+
+                # Dump tsumego screenshots
+                if tsumego_positions:
+                    self.after(0, lambda positions=tsumego_positions: self._dump_tsumego_screenshots(positions))
 
             except Exception as e:
                 import traceback
@@ -952,6 +964,105 @@ class GoAnalysisTool(tk.Tk):
         messagebox.showinfo(
             "Screenshots Complete",
             summary
+        )
+
+    def _capture_tsumego_screenshot(self, move_number: int, gap: float, output_dir: str) -> bool:
+        """Capture a tsumego puzzle screenshot.
+
+        Args:
+            move_number: The move number of the tsumego (we'll screenshot move_number-1)
+            gap: Score gap between top 2 moves
+            output_dir: Directory to save screenshot
+
+        Returns:
+            True if successful
+        """
+        import os
+
+        # Navigate to position before the tsumego move
+        position_to_show = move_number - 1
+        if not self.game_tree.go_to_move_number(position_to_show):
+            return False
+
+        self._replay_to_current()
+
+        # CRITICAL: Update display to set last move marker and update navigation pane
+        self._update_display()
+
+        # Determine whose turn it is for the tsumego
+        # (the player who will make move_number)
+        player_to_move = 'black' if move_number % 2 == 1 else 'white'
+
+        # Temporarily clear overlays (but keep last move marker)
+        # Note: set_top_move_candidates() and set_error_moves() both call redraw()
+        saved_candidates = self.board_canvas.top_move_candidates
+        saved_errors = self.board_canvas.error_moves
+
+        self.board_canvas.set_top_move_candidates([])  # Clears and redraws
+        self.board_canvas.set_error_moves(set())        # Clears and redraws
+
+        # Clear analysis panel text (Top 5 Moves pane)
+        self.analysis_panel.display_position_analysis(None)
+
+        # Update UI to render
+        self.update_idletasks()
+        self.update()
+
+        # Capture screenshot
+        filename = f"move_{position_to_show:03d}_{player_to_move}_to_move_gap_{gap:.1f}.png"
+        output_path = os.path.join(output_dir, filename)
+        success = self._capture_screenshot(output_path)
+
+        # Restore overlays
+        self.board_canvas.set_top_move_candidates(saved_candidates)
+        self.board_canvas.set_error_moves(saved_errors)
+
+        return success
+
+    def _dump_tsumego_screenshots(self, tsumego_positions: list) -> None:
+        """Dump screenshots for tsumego puzzle positions.
+
+        Args:
+            tsumego_positions: List of (move_number, gap) tuples
+        """
+        if not tsumego_positions or not self.current_sgf_path:
+            print("No tsumego positions or SGF path - skipping tsumego screenshot dump")
+            return
+
+        import os
+
+        # Get SGF filename without extension
+        sgf_basename = os.path.basename(self.current_sgf_path)
+        sgf_name = os.path.splitext(sgf_basename)[0]
+
+        # Create tsumego directory
+        sgf_dir = os.path.dirname(self.current_sgf_path)
+        tsumego_dir = os.path.join(sgf_dir, sgf_name, "tsumego")
+        os.makedirs(tsumego_dir, exist_ok=True)
+
+        print(f"Dumping {len(tsumego_positions)} tsumego screenshots to {tsumego_dir}/")
+
+        # Switch to analysis mode for proper display
+        original_mode = self.play_mode
+        if self.play_mode:
+            self._set_analysis_mode()
+
+        # Capture screenshot for each tsumego
+        success_count = 0
+        for move_num, gap in tsumego_positions:
+            if self._capture_tsumego_screenshot(move_num, gap, tsumego_dir):
+                success_count += 1
+
+        # Restore original mode
+        if original_mode:
+            self._set_play_mode()
+
+        print(f"Tsumego screenshot dump complete: {success_count}/{len(tsumego_positions)} images saved")
+
+        # Show completion message
+        messagebox.showinfo(
+            "Tsumego Screenshots Complete",
+            f"Saved {success_count} tsumego puzzle screenshots to:\n{tsumego_dir}/"
         )
 
     def destroy(self) -> None:
