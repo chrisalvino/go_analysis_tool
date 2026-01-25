@@ -120,6 +120,7 @@ class GoAnalysisTool(tk.Tk):
         file_menu.add_command(label="New Game", command=self._new_game)
         file_menu.add_command(label="Open SGF", command=self._open_sgf)
         file_menu.add_command(label="Save SGF", command=self._save_sgf)
+        file_menu.add_command(label="Save Analysis (JSON)", command=self._save_analysis_json)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
 
@@ -233,6 +234,9 @@ class GoAnalysisTool(tk.Tk):
 
                 self._update_display()
                 messagebox.showinfo("Success", "SGF file loaded successfully")
+
+                # Auto-load analysis if JSON file exists
+                self._try_load_analysis_json(filename)
 
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to load SGF: {e}")
@@ -751,6 +755,25 @@ class GoAnalysisTool(tk.Tk):
                 if tsumego_positions:
                     self.after(0, lambda positions=tsumego_positions: self._dump_tsumego_screenshots(positions))
 
+                # Auto-save analysis to JSON
+                if self.current_sgf_path:
+                    import os
+                    sgf_basename = os.path.splitext(self.current_sgf_path)[0]
+                    analysis_path = f"{sgf_basename}_analysis.json"
+
+                    from utils.analysis_export import export_analysis_to_json
+                    success = export_analysis_to_json(
+                        results,
+                        self.current_sgf_path,
+                        self.game_tree.board_size,
+                        self.game_tree.get_komi(),
+                        self.app_config.get_max_visits(),
+                        analysis_path
+                    )
+
+                    if success:
+                        print(f"Analysis auto-saved to: {analysis_path}")
+
             except Exception as e:
                 import traceback
                 error_msg = str(e)
@@ -787,6 +810,90 @@ class GoAnalysisTool(tk.Tk):
                 messagebox.showerror("Error", f"Analysis failed: {e}")
 
         threading.Thread(target=analyze_thread, daemon=True).start()
+
+    def _save_analysis_json(self) -> None:
+        """Save analysis results to JSON file."""
+        if not self.analysis_results or not self.current_sgf_path:
+            messagebox.showwarning("No Analysis", "No analysis results to save.")
+            return
+
+        import os
+        from utils.analysis_export import export_analysis_to_json
+
+        # Generate output filename
+        sgf_basename = os.path.splitext(self.current_sgf_path)[0]
+        default_path = f"{sgf_basename}_analysis.json"
+
+        # Ask user for save location
+        output_path = filedialog.asksaveasfilename(
+            title="Save Analysis",
+            defaultextension=".json",
+            initialfile=os.path.basename(default_path),
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+        )
+
+        if output_path:
+            success = export_analysis_to_json(
+                self.analysis_results,
+                self.current_sgf_path,
+                self.game_tree.board_size,
+                self.game_tree.get_komi(),
+                self.app_config.get_max_visits(),
+                output_path
+            )
+
+            if success:
+                messagebox.showinfo("Success", f"Analysis saved to:\n{output_path}")
+            else:
+                messagebox.showerror("Error", "Failed to save analysis.")
+
+    def _try_load_analysis_json(self, sgf_path: str) -> None:
+        """Try to load analysis JSON file for the given SGF.
+
+        Args:
+            sgf_path: Path to the SGF file
+        """
+        import os
+        from utils.analysis_export import import_analysis_from_json
+
+        # Check for corresponding JSON file
+        sgf_basename = os.path.splitext(sgf_path)[0]
+        analysis_path = f"{sgf_basename}_analysis.json"
+
+        if os.path.exists(analysis_path):
+            print(f"Found analysis file: {analysis_path}")
+
+            # Load the analysis
+            loaded_analysis = import_analysis_from_json(analysis_path)
+
+            if loaded_analysis:
+                self.analysis_results = loaded_analysis
+
+                # Extract errors for display
+                errors = [(a.move_number, a.played_move, a.point_loss)
+                         for a in loaded_analysis if a.is_error]
+
+                # Update analysis panel with errors
+                self.analysis_panel.display_errors(errors)
+
+                # Update current position display
+                self._update_display()
+
+                print(f"Loaded analysis with {len(loaded_analysis)} positions, {len(errors)} errors")
+
+                # Show notification to user
+                messagebox.showinfo(
+                    "Analysis Loaded",
+                    f"Loaded saved analysis from:\n{os.path.basename(analysis_path)}\n\n"
+                    f"Positions analyzed: {len(loaded_analysis)}\n"
+                    f"Errors found: {len(errors)}"
+                )
+            else:
+                print(f"Failed to load analysis from: {analysis_path}")
+        else:
+            # Clear any existing analysis
+            self.analysis_results = []
+            self.analysis_panel.display_errors([])
 
     def _highlight_errors(self, errors: List[tuple]) -> None:
         """Highlight error moves on the board.
