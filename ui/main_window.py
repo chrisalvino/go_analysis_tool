@@ -195,6 +195,13 @@ class GoAnalysisTool(tk.Tk):
             # Clear SGF path for new game
             self.current_sgf_path = None
 
+            # Clear any existing analysis
+            self.analysis_results = []
+            self.analysis_panel.display_errors([])
+            self.analysis_panel.display_position_analysis(None)  # Clear top 5 moves pane
+            self.board_canvas.set_top_move_candidates([])
+            self.board_canvas.set_error_moves(set())
+
             # Update UI
             self.board_canvas.set_board(self.board)
             self.analysis_panel.board_size = size
@@ -217,6 +224,13 @@ class GoAnalysisTool(tk.Tk):
                 # Track the SGF path for screenshot output
                 self.current_sgf_path = filename
 
+                # Clear any existing analysis before loading new game
+                self.analysis_results = []
+                self.analysis_panel.display_errors([])
+                self.analysis_panel.display_position_analysis(None)  # Clear top 5 moves pane
+                self.board_canvas.set_top_move_candidates([])
+                self.board_canvas.set_error_moves(set())
+
                 # Update canvas to use new board
                 self.board_canvas.set_board(self.board)
                 self.analysis_panel.board_size = self.game_tree.board_size
@@ -235,7 +249,7 @@ class GoAnalysisTool(tk.Tk):
                 self._update_display()
                 messagebox.showinfo("Success", "SGF file loaded successfully")
 
-                # Auto-load analysis if JSON file exists
+                # Auto-load analysis if JSON file exists (after clearing old analysis)
                 self._try_load_analysis_json(filename)
 
             except Exception as e:
@@ -590,6 +604,35 @@ class GoAnalysisTool(tk.Tk):
             else:
                 self.current_player = Stone.BLACK
 
+    def _has_black_handicap(self) -> bool:
+        """Check if the game has Black handicap stones.
+
+        Returns:
+            True if the game has Black handicap stones (AB property)
+        """
+        main_line = self.game_tree.get_main_line()
+        if not main_line or len(main_line) < 2:
+            return False
+
+        # Check root node (main_line[0])
+        root_props = main_line[0].properties if main_line[0].properties else None
+
+        # If root has no AB, check first child (main_line[1])
+        if not root_props or 'AB' not in root_props:
+            if len(main_line) > 1 and main_line[1].properties:
+                root_props = main_line[1].properties
+
+        # Check if AB property exists and has Black handicap stones
+        if root_props and 'AB' in root_props:
+            ab_values = root_props['AB']
+            # AB can be a list or a single value
+            if isinstance(ab_values, list) and len(ab_values) > 0:
+                return True
+            elif ab_values:  # Single value
+                return True
+
+        return False
+
     def _update_display(self) -> None:
         """Update the display."""
         # Update board canvas
@@ -610,8 +653,18 @@ class GoAnalysisTool(tk.Tk):
         self.control_panel.update_move_info(current_move, total_moves)
 
         # Update current player indicator
-        # Determine next player based on move count (Black plays on odd moves, White on even)
-        next_player = 'B' if current_move % 2 == 0 else 'W'
+        # Check if this is a handicap game (Black handicap stones)
+        has_black_handicap = self._has_black_handicap()
+
+        if has_black_handicap:
+            # In handicap games, White plays first (move 1), then alternates
+            # Move 0 -> White, Move 1 -> Black, Move 2 -> White
+            next_player = 'W' if current_move % 2 == 0 else 'B'
+        else:
+            # Normal game: Black plays first
+            # Move 0 -> Black, Move 1 -> White, Move 2 -> Black
+            next_player = 'B' if current_move % 2 == 0 else 'W'
+
         self.control_panel.update_current_player(next_player)
 
         self.control_panel.set_navigation_enabled(
@@ -891,9 +944,9 @@ class GoAnalysisTool(tk.Tk):
             else:
                 print(f"Failed to load analysis from: {analysis_path}")
         else:
-            # Clear any existing analysis
-            self.analysis_results = []
-            self.analysis_panel.display_errors([])
+            # No JSON file exists - analysis was already cleared in _open_sgf
+            # This block is now redundant but kept for completeness
+            pass
 
     def _highlight_errors(self, errors: List[tuple]) -> None:
         """Highlight error moves on the board.

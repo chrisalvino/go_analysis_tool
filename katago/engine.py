@@ -154,13 +154,13 @@ class KataGoEngine:
         Returns:
             Analysis results as dict, or None if failed
         """
-        # Convert moves to kata-analyze format: [["b", "D4"], ["w", "Q16"], ...]
+        # Convert moves to kata-analyze format: [["b", "d4"], ["w", "q16"], ...]
         formatted_moves = []
-        current_player = initial_player.upper()
+        current_player = initial_player.lower()
         for move in moves:
-            formatted_moves.append([current_player, move])
+            formatted_moves.append([current_player, move.lower()])
             # Alternate player
-            current_player = 'W' if current_player == 'B' else 'B'
+            current_player = 'w' if current_player == 'b' else 'b'
 
         # Build query
         self.query_counter += 1
@@ -171,7 +171,7 @@ class KataGoEngine:
             "komi": komi,
             "boardXSize": board_size,
             "boardYSize": board_size,
-            "initialPlayer": initial_player,
+            "initialPlayer": initial_player.lower(),  # KataGo expects lowercase
             "analyzeTurns": [len(moves)],  # Analyze after all moves
             "maxVisits": max_visits,
             "includeOwnership": False,
@@ -180,7 +180,13 @@ class KataGoEngine:
 
         # Add initial stones (handicap) if provided
         if initial_stones:
-            query["initialStones"] = initial_stones
+            # Convert to lowercase format expected by KataGo
+            # Input: [["B", "D16"], ["W", "Q4"]]
+            # Output: [["b", "d16"], ["w", "q4"]]
+            lowercase_stones = []
+            for color, move in initial_stones:
+                lowercase_stones.append([color.lower(), move.lower()])
+            query["initialStones"] = lowercase_stones
 
         # Send query
         self.send_query(query)

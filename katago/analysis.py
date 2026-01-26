@@ -152,10 +152,20 @@ class GameAnalyzer:
                 komi = 7.5
 
         # Extract handicap/setup stones from root node
+        # CRITICAL: Check BOTH root and first child for handicap stones
         initial_stones = []
-        if main_line and main_line[0].properties:
+
+        # First, try the root node (main_line[0])
+        root_props = None
+        if main_line and len(main_line) > 0 and main_line[0].properties:
             root_props = main_line[0].properties
 
+        # If root has no AB/AW, check first child (main_line[1])
+        if not root_props or ('AB' not in root_props and 'AW' not in root_props):
+            if len(main_line) > 1 and main_line[1].properties:
+                root_props = main_line[1].properties
+
+        if root_props:
             # Add Black handicap stones (AB property)
             if 'AB' in root_props:
                 ab_values = root_props['AB']
@@ -208,7 +218,14 @@ class GameAnalyzer:
                     moves_gtp.append(gtp_move)
 
             # Determine who plays next (the player who makes move i)
-            initial_player = 'B'
+            # In handicap games, White plays first after Black handicap stones
+            if initial_stones and all(stone[0] == 'B' for stone in initial_stones):
+                # Black handicap stones - White plays first
+                initial_player = 'W'
+            else:
+                # Normal game or White handicap - Black plays first
+                initial_player = 'B'
+
             next_player = 'B' if len(moves_gtp) % 2 == 0 else 'W'
 
             # Get analysis before the move
@@ -241,7 +258,7 @@ class GameAnalyzer:
             # Parse and create analysis - pass main_line and move_index for state restoration
             pos_analysis = self._create_position_analysis(
                 move_number, node, analysis_data, board_size, self.primary_engine, max_visits,
-                main_line=main_line, move_index=i, komi=komi
+                main_line=main_line, move_index=i, komi=komi, initial_stones=initial_stones
             )
 
             # Report errors
@@ -405,7 +422,8 @@ class GameAnalyzer:
         max_visits: int = 200,
         main_line: List[GameNode] = None,
         move_index: int = None,
-        komi: float = 7.5
+        komi: float = 7.5,
+        initial_stones: Optional[List[Tuple[str, str]]] = None
     ) -> PositionAnalysis:
         """Create PositionAnalysis from raw analysis data.
 
@@ -419,6 +437,7 @@ class GameAnalyzer:
             main_line: Full game line (for state restoration)
             move_index: Current move index in main_line (for state restoration)
             komi: Komi value
+            initial_stones: Handicap/setup stones to pass to KataGo
 
         Returns:
             PositionAnalysis object
@@ -459,7 +478,11 @@ class GameAnalyzer:
                 moves_with_played.append(gtp_move)
 
                 # Determine initial player
-                initial_player = 'B'
+                # In handicap games, White plays first after Black handicap stones
+                if initial_stones and all(stone[0] == 'B' for stone in initial_stones):
+                    initial_player = 'W'
+                else:
+                    initial_player = 'B'
 
                 # Analyze from opponent's perspective (after this move)
                 opponent_analysis = engine.analyze_position(
@@ -467,7 +490,8 @@ class GameAnalyzer:
                     board_size=board_size,
                     komi=komi,
                     initial_player=initial_player,
-                    max_visits=max_visits
+                    max_visits=max_visits,
+                    initial_stones=initial_stones
                 )
 
                 if opponent_analysis and 'moveInfos' in opponent_analysis:
