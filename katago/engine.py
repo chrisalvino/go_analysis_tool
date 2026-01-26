@@ -139,7 +139,8 @@ class KataGoEngine:
 
     def analyze_position(self, moves: List[str], board_size: int = 19, komi: float = 7.5,
                         initial_player: str = 'B', max_visits: int = 200,
-                        initial_stones: Optional[List[Tuple[str, str]]] = None) -> Optional[Dict[str, Any]]:
+                        initial_stones: Optional[List[Tuple[str, str]]] = None,
+                        rules: str = 'japanese') -> Optional[Dict[str, Any]]:
         """Analyze a position using kata-analyze.
 
         Args:
@@ -150,6 +151,8 @@ class KataGoEngine:
             max_visits: Maximum number of visits for analysis
             initial_stones: Optional list of (color, move) tuples for handicap stones
                            e.g., [("B", "D4"), ("B", "Q16")]
+            rules: Rules to use ('japanese', 'chinese', 'aga', 'tromp-taylor', etc.)
+                   Defaults to 'japanese'
 
         Returns:
             Analysis results as dict, or None if failed
@@ -167,7 +170,7 @@ class KataGoEngine:
         query = {
             "id": f"query_{self.query_counter}",
             "moves": formatted_moves,
-            "rules": "chinese",
+            "rules": rules,
             "komi": komi,
             "boardXSize": board_size,
             "boardYSize": board_size,

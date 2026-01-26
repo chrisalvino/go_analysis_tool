@@ -115,11 +115,14 @@ class GameAnalyzer:
 
         board_size = game_tree.board_size
 
+        # Get rules from game tree
+        rules = game_tree.get_rules()
+
         # Decide between sequential and parallel analysis
         # Note: Parallel analysis disabled in kata-analyze mode for simplicity
         # Always use sequential analysis
         return self._analyze_sequential(
-            main_line, board_size, max_visits, progress_callback
+            main_line, board_size, max_visits, progress_callback, rules
         )
 
     def _analyze_sequential(
@@ -127,7 +130,8 @@ class GameAnalyzer:
         main_line: List[GameNode],
         board_size: int,
         max_visits: int,
-        progress_callback: Optional[callable]
+        progress_callback: Optional[callable],
+        rules: str
     ) -> List[PositionAnalysis]:
         """Sequential single-threaded analysis.
 
@@ -136,6 +140,7 @@ class GameAnalyzer:
             board_size: Board size
             max_visits: Maximum visits per position
             progress_callback: Progress callback
+            rules: Rules to use for analysis
 
         Returns:
             List of position analyses
@@ -237,7 +242,8 @@ class GameAnalyzer:
                 komi=komi,
                 initial_player=initial_player,
                 max_visits=max_visits,
-                initial_stones=initial_stones if initial_stones else None
+                initial_stones=initial_stones if initial_stones else None,
+                rules=rules
             )
             elapsed = time.time() - start_time
 
@@ -258,7 +264,8 @@ class GameAnalyzer:
             # Parse and create analysis - pass main_line and move_index for state restoration
             pos_analysis = self._create_position_analysis(
                 move_number, node, analysis_data, board_size, self.primary_engine, max_visits,
-                main_line=main_line, move_index=i, komi=komi, initial_stones=initial_stones
+                main_line=main_line, move_index=i, komi=komi, initial_stones=initial_stones,
+                rules=rules
             )
 
             # Report errors
@@ -423,7 +430,8 @@ class GameAnalyzer:
         main_line: List[GameNode] = None,
         move_index: int = None,
         komi: float = 7.5,
-        initial_stones: Optional[List[Tuple[str, str]]] = None
+        initial_stones: Optional[List[Tuple[str, str]]] = None,
+        rules: str = 'chinese'
     ) -> PositionAnalysis:
         """Create PositionAnalysis from raw analysis data.
 
@@ -438,6 +446,7 @@ class GameAnalyzer:
             move_index: Current move index in main_line (for state restoration)
             komi: Komi value
             initial_stones: Handicap/setup stones to pass to KataGo
+            rules: Rules to use for analysis
 
         Returns:
             PositionAnalysis object
@@ -491,7 +500,8 @@ class GameAnalyzer:
                     komi=komi,
                     initial_player=initial_player,
                     max_visits=max_visits,
-                    initial_stones=initial_stones
+                    initial_stones=initial_stones,
+                    rules=rules
                 )
 
                 if opponent_analysis and 'moveInfos' in opponent_analysis:
@@ -567,6 +577,7 @@ class GameAnalyzer:
         # Build move list up to the position
         board_size = game_tree.board_size
         komi = game_tree.get_komi()
+        rules = game_tree.get_rules()
 
         # Get main line
         main_line = game_tree.get_main_line()
@@ -592,7 +603,8 @@ class GameAnalyzer:
             board_size=board_size,
             komi=komi,
             initial_player=initial_player,
-            max_visits=max_visits
+            max_visits=max_visits,
+            rules=rules
         )
 
         if analysis_data is None:

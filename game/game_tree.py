@@ -254,3 +254,46 @@ class GameTree:
             return float(komi_str)
         except (ValueError, TypeError):
             return 6.5
+
+    def get_rules(self) -> str:
+        """Get rules from root properties.
+
+        Returns:
+            Rules string compatible with KataGo (default 'japanese')
+            Maps common SGF rule names to KataGo format:
+            - 'Japanese' -> 'japanese'
+            - 'Chinese' -> 'chinese'
+            - 'AGA' -> 'aga'
+            - 'New Zealand' -> 'chinese' (closest equivalent)
+            - Default -> 'japanese'
+        """
+        # Try to get rules from root properties
+        rules_str = self.root.properties.get('RU', None)
+
+        # If not in root, check first child (similar to handicap stones)
+        if rules_str is None:
+            main_line = self.get_main_line()
+            if len(main_line) > 1 and main_line[1].properties:
+                rules_str = main_line[1].properties.get('RU', 'japanese')
+            else:
+                rules_str = 'japanese'
+
+        # Normalize to lowercase
+        rules_lower = str(rules_str).lower()
+
+        # Map SGF rule names to KataGo format
+        if 'japanese' in rules_lower:
+            return 'japanese'
+        elif 'chinese' in rules_lower:
+            return 'chinese'
+        elif 'aga' in rules_lower:
+            return 'aga'
+        elif 'new zealand' in rules_lower or 'nz' in rules_lower:
+            return 'chinese'  # New Zealand rules are similar to Chinese
+        elif 'korean' in rules_lower:
+            return 'chinese'  # Korean rules are similar to Chinese
+        elif 'tromp' in rules_lower or 'tromp-taylor' in rules_lower:
+            return 'tromp-taylor'
+        else:
+            # Default to japanese if unknown
+            return 'japanese'
