@@ -999,11 +999,16 @@ class GoAnalysisTool(tk.Tk):
             # Capture the window area
             screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
 
+            # Convert RGBA to RGB (JPEG doesn't support transparency/alpha channel)
+            if screenshot.mode == 'RGBA':
+                screenshot = screenshot.convert('RGB')
+
             # Ensure output directory exists
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-            # Save screenshot
-            screenshot.save(output_path)
+            # Save screenshot as JPEG with quality=75 for significant size reduction
+            # This typically achieves 1/4 to 1/5 of PNG file size
+            screenshot.save(output_path, format='JPEG', quality=75, optimize=True)
             print(f"Screenshot saved: {output_path}")
             return True
 
@@ -1101,7 +1106,7 @@ class GoAnalysisTool(tk.Tk):
                     self.update()
 
                     # Generate filename
-                    filename = f"move_{move_num:03d}_loss_{point_loss:.1f}pts.png"
+                    filename = f"move_{move_num:03d}_loss_{point_loss:.1f}pts.jpg"
                     output_path = os.path.join(category_dir, filename)
 
                     # Capture screenshot
@@ -1170,7 +1175,7 @@ class GoAnalysisTool(tk.Tk):
         self.update()
 
         # Capture screenshot
-        filename = f"move_{position_to_show:03d}_{player_to_move}_to_move_gap_{gap:.1f}.png"
+        filename = f"move_{position_to_show:03d}_{player_to_move}_to_move_gap_{gap:.1f}.jpg"
         output_path = os.path.join(output_dir, filename)
         success = self._capture_screenshot(output_path)
 
