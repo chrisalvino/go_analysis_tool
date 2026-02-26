@@ -1,0 +1,4 @@
+
+
+I was thinking about .. instead of showing the top 5 moves
+showing *all* moves that are within 0.5 of the top move

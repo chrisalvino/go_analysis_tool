@@ -251,11 +251,11 @@ class BoardCanvas(tk.Canvas):
                 text_color = 'black'
                 font_size = 12
 
-            # Draw rank number (1-5)
+            # Draw rank number (1-5) with clearer font
             self.create_text(
                 x, y,
                 text=str(rank + 1),  # Display as 1-5 instead of 0-4
-                font=('Arial', font_size, 'bold'),
+                font=('Helvetica', font_size),
                 fill=text_color,
                 tags='candidate'
             )

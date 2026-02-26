@@ -15,6 +15,7 @@ from katago.analysis import GameAnalyzer, PositionAnalysis
 from ui.board_canvas import BoardCanvas
 from ui.control_panel import ControlPanel
 from ui.analysis_panel import AnalysisPanel
+from ui.explore_window import ExploreWindow
 from utils.config import Config
 from utils.katago_setup import run_setup
 
@@ -47,8 +48,15 @@ class GoAnalysisTool(tk.Tk):
         # Mode
         self.play_mode = True  # True = play mode, False = analysis mode
 
+        # Play AI mode settings
+        self.ai_player_color = Stone.WHITE  # AI plays White by default
+        self.is_ai_thinking = False  # Track if AI is currently analyzing/playing
+
         # Track current SGF file for screenshot output
         self.current_sgf_path: Optional[str] = None
+
+        # Explore mode window
+        self.explore_window: Optional[ExploreWindow] = None
 
         self._setup_ui()
         self._setup_menu()
@@ -99,6 +107,61 @@ class GoAnalysisTool(tk.Tk):
             font=("Arial", 10)
         )
         analysis_radio.pack(anchor=tk.W, pady=2)
+
+        play_ai_radio = tk.Radiobutton(
+            mode_frame,
+            text="Play AI Mode",
+            variable=self.mode_var,
+            value="play_ai",
+            command=self._set_play_ai_mode,
+            font=("Arial", 10)
+        )
+        play_ai_radio.pack(anchor=tk.W, pady=2)
+
+        # Store reference for enable/disable based on KataGo availability
+        self.play_ai_radio = play_ai_radio
+
+        # Subframe for AI color choice (indented under Play AI radio)
+        ai_color_frame = tk.Frame(mode_frame)
+        ai_color_frame.pack(anchor=tk.W, padx=25)  # Indent to show it's part of Play AI
+
+        self.ai_color_var = tk.StringVar(value="white")
+
+        ai_white_radio = tk.Radiobutton(
+            ai_color_frame,
+            text="AI plays White",
+            variable=self.ai_color_var,
+            value="white",
+            command=lambda: self._set_ai_color(Stone.WHITE),
+            font=("Arial", 9)
+        )
+        ai_white_radio.pack(side=tk.LEFT, padx=5)
+
+        ai_black_radio = tk.Radiobutton(
+            ai_color_frame,
+            text="AI plays Black",
+            variable=self.ai_color_var,
+            value="black",
+            command=lambda: self._set_ai_color(Stone.BLACK),
+            font=("Arial", 9)
+        )
+        ai_black_radio.pack(side=tk.LEFT, padx=5)
+
+        # Store reference for enable/disable
+        self.ai_color_frame = ai_color_frame
+
+        explore_radio = tk.Radiobutton(
+            mode_frame,
+            text="Explore Mode",
+            variable=self.mode_var,
+            value="explore",
+            command=self._set_explore_mode,
+            font=("Arial", 10)
+        )
+        explore_radio.pack(anchor=tk.W, pady=2)
+
+        # Store reference for enable/disable based on KataGo availability
+        self.explore_radio = explore_radio
 
         # Control panel
         self.control_panel = ControlPanel(right_frame)
@@ -154,6 +217,23 @@ class GoAnalysisTool(tk.Tk):
         self.analysis_panel.analyze_pos_btn.config(command=self._analyze_position)
         self.analysis_panel.on_error_click = self._jump_to_error
 
+    def _update_mode_availability(self) -> None:
+        """Update which modes are available based on KataGo configuration."""
+        if not hasattr(self, 'explore_radio'):
+            return  # Not initialized yet
+
+        # Explore mode and Play AI mode require KataGo to be configured
+        mode_state = tk.NORMAL if self.analyzer else tk.DISABLED
+        self.explore_radio.config(state=mode_state)
+
+        # Also disable Play AI mode if KataGo not available
+        if hasattr(self, 'play_ai_radio'):
+            self.play_ai_radio.config(state=mode_state)
+
+        # If explore/play_ai mode was selected but KataGo became unavailable, switch to play mode
+        if self.mode_var.get() in ["explore", "play_ai"] and not self.analyzer:
+            self._set_play_mode()
+
     def _init_katago(self) -> None:
         """Initialize KataGo if configured."""
         if self.app_config.is_katago_configured():
@@ -180,6 +260,9 @@ class GoAnalysisTool(tk.Tk):
             except Exception as e:
                 print(f"Error initializing KataGo: {e}")
                 self.katago_engine = None
+
+        # Update mode availability after initialization
+        self._update_mode_availability()
 
     def _new_game(self) -> None:
         """Create a new game."""
@@ -328,6 +411,7 @@ class GoAnalysisTool(tk.Tk):
                         self.katago_engine.stop()
 
                     self.after(0, lambda: self._init_katago())
+                    self.after(0, lambda: self._update_mode_availability())
                     self.after(0, lambda: progress_window.destroy())
                     self.after(0, lambda: messagebox.showinfo(
                         "Success",
@@ -399,6 +483,7 @@ class GoAnalysisTool(tk.Tk):
                 self.katago_engine.stop()
 
             self._init_katago()
+            self._update_mode_availability()
             dialog.destroy()
 
         tk.Button(button_frame, text="Auto Setup", command=auto_setup, width=12).pack(side=tk.LEFT, padx=5)
@@ -429,6 +514,10 @@ class GoAnalysisTool(tk.Tk):
         self.mode_var.set("play")
         self.control_panel.set_play_mode(True)
         self.board_canvas.set_preview_stone(self.current_player)
+
+        # Hide explore window if it exists
+        if self.explore_window:
+            self.explore_window.hide()
         # Don't clear analysis overlays - let them show in both modes
 
     def _set_analysis_mode(self) -> None:
@@ -437,9 +526,73 @@ class GoAnalysisTool(tk.Tk):
         self.mode_var.set("analysis")
         self.control_panel.set_play_mode(False)
         self.board_canvas.set_preview_stone(None)
+
+        # Hide explore window if it exists
+        if self.explore_window:
+            self.explore_window.hide()
+
         # Update display to show analysis if available
         if self.analysis_results:
             self._display_current_analysis()
+
+    def _set_explore_mode(self) -> None:
+        """Switch to explore mode."""
+        self.mode_var.set("explore")
+        self.control_panel.set_play_mode(True)  # Enable Pass button
+        self.board_canvas.set_preview_stone(self.current_player)  # Show preview
+
+        # Create and show explore window
+        if not self.explore_window:
+            self.explore_window = ExploreWindow(self, self.board.size)
+        self.explore_window.show()
+
+        # Show analysis overlays if available
+        if self.analysis_results:
+            self._display_current_analysis()
+
+    def _set_ai_color(self, color: Stone) -> None:
+        """Set which color the AI plays.
+
+        Args:
+            color: Stone.BLACK or Stone.WHITE
+        """
+        self.ai_player_color = color
+
+    def _set_play_ai_mode(self) -> None:
+        """Switch to Play AI mode."""
+        if not self.analyzer:
+            messagebox.showerror(
+                "KataGo Required",
+                "Play AI mode requires KataGo to be configured.\n"
+                "Please configure it in Settings > Configure KataGo."
+            )
+            # Revert to play mode
+            self.mode_var.set("play")
+            return
+
+        self.mode_var.set("play_ai")
+        self.control_panel.set_play_mode(False)  # Disable Pass button
+
+        # Set preview stone based on who goes first
+        # If AI plays Black, user plays White and sees white preview
+        # If AI plays White, user plays Black and sees black preview
+        user_color = Stone.WHITE if self.ai_player_color == Stone.BLACK else Stone.BLACK
+        self.board_canvas.set_preview_stone(user_color)
+
+        # Clear any analysis overlays
+        self.board_canvas.set_top_move_candidates([])
+        self.board_canvas.set_error_moves(set())
+
+        # Hide explore window if it exists
+        if self.explore_window:
+            self.explore_window.hide()
+
+        # Reset AI thinking state
+        self.is_ai_thinking = False
+
+        # If AI plays Black (goes first), trigger AI move immediately
+        if self.ai_player_color == Stone.BLACK and self.current_player == Stone.BLACK:
+            self.after(500, self._play_ai_move)  # Small delay for UI to settle
 
     def _on_board_click(self, row: int, col: int) -> None:
         """Handle board click.
@@ -448,7 +601,19 @@ class GoAnalysisTool(tk.Tk):
             row: Row index
             col: Column index
         """
-        if self.play_mode:
+        mode = self.mode_var.get()
+
+        # Block clicks in Play AI mode if it's AI's turn or AI is thinking
+        if mode == "play_ai":
+            if self.is_ai_thinking:
+                return  # Silently ignore clicks while AI is thinking
+
+            # Check if it's user's turn
+            user_color = Stone.WHITE if self.ai_player_color == Stone.BLACK else Stone.BLACK
+            if self.current_player != user_color:
+                return  # Silently ignore - not user's turn
+
+        if mode in ["play", "explore", "play_ai"]:
             self._play_move(row, col)
 
     def _play_move(self, row: int, col: int) -> None:
@@ -472,12 +637,26 @@ class GoAnalysisTool(tk.Tk):
             self.current_player = Stone.WHITE if self.current_player == Stone.BLACK else Stone.BLACK
 
             self._update_display()
+
+            # AUTO-ANALYZE in explore mode
+            mode = self.mode_var.get()
+            if mode == "explore" and self.analyzer:
+                # Small delay to ensure UI updates first
+                self.after(100, self._trigger_explore_analysis)
+
+            # AUTO-PLAY AI MOVE in play_ai mode
+            if mode == "play_ai" and self.analyzer:
+                # Check if it's AI's turn
+                if self.current_player == self.ai_player_color:
+                    # Small delay to ensure UI updates first
+                    self.after(100, self._play_ai_move)
         else:
             messagebox.showwarning("Invalid Move", result.message)
 
     def _play_pass(self) -> None:
         """Play a pass move."""
-        if self.play_mode:
+        mode = self.mode_var.get()
+        if mode in ["play", "explore", "play_ai"]:
             self.game_tree.add_pass(self.current_player)
             self.rules.pass_turn()
 
@@ -485,6 +664,15 @@ class GoAnalysisTool(tk.Tk):
             self.current_player = Stone.WHITE if self.current_player == Stone.BLACK else Stone.BLACK
 
             self._update_display()
+
+            # Auto-analyze in explore mode
+            if mode == "explore" and self.analyzer:
+                self.after(100, self._trigger_explore_analysis)
+
+            # Auto-play AI move in play_ai mode
+            if mode == "play_ai" and self.analyzer:
+                if self.current_player == self.ai_player_color:
+                    self.after(100, self._play_ai_move)
 
     def _go_previous(self) -> None:
         """Go to previous move."""
@@ -827,6 +1015,10 @@ class GoAnalysisTool(tk.Tk):
                     if success:
                         print(f"Analysis auto-saved to: {analysis_path}")
 
+                        # Generate PDF error report
+                        pdf_path = f"{sgf_basename}_error_report.pdf"
+                        self.after(0, lambda path=pdf_path: self._generate_pdf_report(path))
+
             except Exception as e:
                 import traceback
                 error_msg = str(e)
@@ -864,6 +1056,282 @@ class GoAnalysisTool(tk.Tk):
 
         threading.Thread(target=analyze_thread, daemon=True).start()
 
+    def _trigger_explore_analysis(self) -> None:
+        """Trigger automatic analysis in explore mode."""
+        if not self.analyzer:
+            return
+
+        # Get current position and board info
+        board_size = self.game_tree.board_size
+        komi = self.game_tree.get_komi()
+        rules = self.game_tree.get_rules()
+
+        # Build complete move list including the move just played
+        main_line = self.game_tree.current.get_main_line()
+        moves_gtp = []
+
+        # Skip root (index 0), iterate through all moves including current
+        for node in main_line[1:]:
+            if node.is_pass:
+                moves_gtp.append('pass')
+            elif node.move:
+                gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1], board_size)
+                moves_gtp.append(gtp_move)
+
+        # Determine initial player (for handicap games)
+        initial_stones = []
+        # Extract handicap stones from root or first child
+        root_props = None
+        if main_line and len(main_line) > 0 and main_line[0].properties:
+            root_props = main_line[0].properties
+
+        if not root_props or ('AB' not in root_props and 'AW' not in root_props):
+            if len(main_line) > 1 and main_line[1].properties:
+                root_props = main_line[1].properties
+
+        if root_props:
+            # Add Black handicap stones (AB property)
+            if 'AB' in root_props:
+                ab_values = root_props['AB']
+                if isinstance(ab_values, list):
+                    for stone_pos in ab_values:
+                        if stone_pos and len(stone_pos) == 2:
+                            try:
+                                row = ord(stone_pos[1]) - ord('a')
+                                col = ord(stone_pos[0]) - ord('a')
+                                gtp_move = KataGoEngine.coords_to_gtp(row, col, board_size)
+                                initial_stones.append(["B", gtp_move])
+                            except Exception as e:
+                                print(f"Error converting handicap stone {stone_pos}: {e}")
+
+        # Determine initial player
+        if initial_stones and all(stone[0] == 'B' for stone in initial_stones):
+            initial_player = 'W'  # White plays first in Black handicap games
+        else:
+            initial_player = 'B'  # Normal game
+
+        # Run in background thread
+        def analyze_thread():
+            try:
+                # Call KataGo engine directly with complete move list
+                analysis_data = self.katago_engine.analyze_position(
+                    moves=moves_gtp,
+                    board_size=board_size,
+                    komi=komi,
+                    initial_player=initial_player,
+                    max_visits=self.app_config.get_max_visits(),
+                    initial_stones=initial_stones if initial_stones else None,
+                    rules=rules
+                )
+
+                if analysis_data and 'moveInfos' in analysis_data:
+                    # Parse move candidates
+                    move_analyses = []
+                    for move_info in analysis_data['moveInfos']:
+                        move_str = move_info.get('move', '')
+                        is_pass = move_str.lower() == 'pass'
+                        move = None
+
+                        if not is_pass:
+                            try:
+                                move = KataGoEngine.gtp_to_coords(move_str, board_size)
+                            except:
+                                continue
+
+                        win_rate = move_info.get('winrate', 0.0)
+                        score_lead = move_info.get('scoreLead', 0.0)
+                        visits = move_info.get('visits', 0)
+                        order = move_info.get('order', len(move_analyses))
+                        pv = move_info.get('pv', [])
+
+                        from katago.analysis import MoveAnalysis
+                        move_analysis = MoveAnalysis(
+                            move=move,
+                            is_pass=is_pass,
+                            win_rate=win_rate,
+                            score_lead=score_lead,
+                            visits=visits,
+                            order=order,
+                            pv=pv
+                        )
+                        move_analyses.append(move_analysis)
+
+                    # CRITICAL: Deduplicate moves - keep the one with most visits
+                    seen_moves = {}
+                    for move_analysis in move_analyses:
+                        # Create a key for this move (position or 'pass')
+                        if move_analysis.is_pass:
+                            key = 'pass'
+                        else:
+                            key = move_analysis.move  # (row, col) tuple
+
+                        # Keep the one with more visits (more accurate analysis)
+                        if key not in seen_moves or move_analysis.visits > seen_moves[key].visits:
+                            seen_moves[key] = move_analysis
+
+                    # Get deduplicated list
+                    top_moves = list(seen_moves.values())
+
+                    # Sort by score lead (descending)
+                    top_moves.sort(key=lambda x: x.score_lead, reverse=True)
+
+                    # Create a minimal PositionAnalysis object for display
+                    from katago.analysis import PositionAnalysis
+                    position_analysis = PositionAnalysis(
+                        move_number=self.game_tree.get_current_move_number(),
+                        played_move=None,  # No move played yet (we're showing what SHOULD be played)
+                        played_move_analysis=None,
+                        top_moves=top_moves[:5],  # Top 5
+                        is_error=False,
+                        point_loss=0.0
+                    )
+
+                    # Determine whose turn it is NEXT (after the move just played)
+                    current_node = self.game_tree.current
+                    if current_node.color == Stone.BLACK:
+                        # Black just played, so White plays next
+                        next_player_str = 'W'
+                    elif current_node.color == Stone.WHITE:
+                        # White just played, so Black plays next
+                        next_player_str = 'B'
+                    else:
+                        # Default to Black
+                        next_player_str = 'B'
+
+                    # Update explore window instead of analysis panel
+                    if self.explore_window:
+                        self.after(0, lambda: self.explore_window.update_moves(
+                            top_moves[:5], next_player_str
+                        ))
+
+                    # Also update board overlays
+                    self.after(0, lambda: self._display_analysis_result(position_analysis))
+
+            except Exception as e:
+                print(f"Explore mode analysis error: {e}")
+                import traceback
+                traceback.print_exc()
+
+        threading.Thread(target=analyze_thread, daemon=True).start()
+
+    def _play_ai_move(self) -> None:
+        """Play the best move according to AI analysis (for Play AI mode)."""
+        if not self.analyzer:
+            return
+
+        # Set flag to block user clicks
+        self.is_ai_thinking = True
+
+        # Get current position and board info
+        board_size = self.game_tree.board_size
+        komi = self.game_tree.get_komi()
+        rules = self.game_tree.get_rules()
+
+        # Build complete move list including moves up to current position
+        main_line = self.game_tree.current.get_main_line()
+        moves_gtp = []
+
+        # Skip root (index 0), iterate through all moves including current
+        for node in main_line[1:]:
+            if node.is_pass:
+                moves_gtp.append('pass')
+            elif node.move:
+                gtp_move = KataGoEngine.coords_to_gtp(node.move[0], node.move[1], board_size)
+                moves_gtp.append(gtp_move)
+
+        # Determine initial player (for handicap games)
+        initial_stones = []
+        root_props = None
+        if main_line and len(main_line) > 0 and main_line[0].properties:
+            root_props = main_line[0].properties
+
+        if not root_props or ('AB' not in root_props and 'AW' not in root_props):
+            if len(main_line) > 1 and main_line[1].properties:
+                root_props = main_line[1].properties
+
+        if root_props:
+            # Add Black handicap stones (AB property)
+            if 'AB' in root_props:
+                ab_values = root_props['AB']
+                if isinstance(ab_values, list):
+                    for stone_pos in ab_values:
+                        if stone_pos and len(stone_pos) == 2:
+                            try:
+                                row = ord(stone_pos[1]) - ord('a')
+                                col = ord(stone_pos[0]) - ord('a')
+                                gtp_move = KataGoEngine.coords_to_gtp(row, col, board_size)
+                                initial_stones.append(["B", gtp_move])
+                            except Exception as e:
+                                print(f"Error converting handicap stone {stone_pos}: {e}")
+
+        # Determine initial player
+        if initial_stones and all(stone[0] == 'B' for stone in initial_stones):
+            initial_player = 'W'  # White plays first in Black handicap games
+        else:
+            initial_player = 'B'  # Normal game
+
+        # Run in background thread
+        def analyze_thread():
+            try:
+                # Call KataGo engine directly with complete move list
+                analysis_data = self.katago_engine.analyze_position(
+                    moves=moves_gtp,
+                    board_size=board_size,
+                    komi=komi,
+                    initial_player=initial_player,
+                    max_visits=self.app_config.get_max_visits(),
+                    initial_stones=initial_stones if initial_stones else None,
+                    rules=rules
+                )
+
+                if analysis_data and 'moveInfos' in analysis_data:
+                    # Get the best move (first in the list)
+                    best_move_info = analysis_data['moveInfos'][0]
+                    move_str = best_move_info.get('move', '')
+
+                    if move_str.lower() == 'pass':
+                        # AI wants to pass
+                        self.after(0, self._play_pass)
+                    else:
+                        # AI wants to play a move
+                        try:
+                            row, col = KataGoEngine.gtp_to_coords(move_str, board_size)
+                            # Play the move on the main thread
+                            self.after(0, lambda r=row, c=col: self._play_move(r, c))
+                        except Exception as e:
+                            print(f"Error parsing AI move {move_str}: {e}")
+                            self.after(0, lambda: setattr(self, 'is_ai_thinking', False))
+                else:
+                    # No moves available - reset flag
+                    self.after(0, lambda: setattr(self, 'is_ai_thinking', False))
+
+            except Exception as e:
+                print(f"AI move error: {e}")
+                import traceback
+                traceback.print_exc()
+                # Reset flag on error
+                self.after(0, lambda: setattr(self, 'is_ai_thinking', False))
+
+            finally:
+                # Always reset the thinking flag
+                self.after(0, lambda: setattr(self, 'is_ai_thinking', False))
+
+        threading.Thread(target=analyze_thread, daemon=True).start()
+
+    def _display_analysis_result(self, analysis: PositionAnalysis) -> None:
+        """Display analysis result on board (for explore mode)."""
+        if analysis and analysis.top_moves:
+            # Extract top 5 move candidates for board display
+            candidates = []
+            for i, move_analysis in enumerate(analysis.top_moves[:5]):
+                if move_analysis.move and not move_analysis.is_pass:
+                    row, col = move_analysis.move
+                    candidates.append((row, col, i))  # (row, col, rank)
+
+            # Update board canvas with candidates
+            self.board_canvas.set_top_move_candidates(candidates)
+            self.board_canvas.redraw()
+
     def _save_analysis_json(self) -> None:
         """Save analysis results to JSON file."""
         if not self.analysis_results or not self.current_sgf_path:
@@ -899,6 +1367,37 @@ class GoAnalysisTool(tk.Tk):
                 messagebox.showinfo("Success", f"Analysis saved to:\n{output_path}")
             else:
                 messagebox.showerror("Error", "Failed to save analysis.")
+
+    def _generate_pdf_report(self, output_path: str) -> None:
+        """Generate PDF error report from analysis results.
+
+        Args:
+            output_path: Path where PDF should be saved
+        """
+        if not self.analysis_results or not self.current_sgf_path:
+            return
+
+        try:
+            from utils.pdf_report import generate_error_report_pdf
+
+            success = generate_error_report_pdf(
+                self.analysis_results,
+                self.game_tree,
+                self.current_sgf_path,
+                output_path
+            )
+
+            if success:
+                print(f"PDF error report saved: {output_path}")
+            else:
+                print(f"Failed to generate PDF report")
+
+        except ImportError:
+            print("ERROR: reportlab not installed. Run: pip install reportlab")
+        except Exception as e:
+            print(f"Error generating PDF report: {e}")
+            import traceback
+            traceback.print_exc()
 
     def _try_load_analysis_json(self, sgf_path: str) -> None:
         """Try to load analysis JSON file for the given SGF.
@@ -1240,5 +1739,9 @@ class GoAnalysisTool(tk.Tk):
         # Stop primary engine
         if self.katago_engine:
             self.katago_engine.stop()
+
+        # Close explore window
+        if self.explore_window:
+            self.explore_window.destroy()
 
         super().destroy()

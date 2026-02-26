@@ -50,12 +50,12 @@ class AnalysisPanel(tk.Frame):
         self.status_label.pack(pady=2)
 
         # Top moves section
-        top_moves_frame = tk.LabelFrame(self, text="Top 5 Moves", padx=5, pady=5)
-        top_moves_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.top_moves_frame = tk.LabelFrame(self, text="Top 5 Moves", padx=5, pady=5)
+        self.top_moves_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Top moves list
-        self.top_moves_text = tk.Text(top_moves_frame, height=12, width=35, wrap=tk.WORD)
-        top_moves_scroll = tk.Scrollbar(top_moves_frame, command=self.top_moves_text.yview)
+        self.top_moves_text = tk.Text(self.top_moves_frame, height=12, width=35, wrap=tk.WORD)
+        top_moves_scroll = tk.Scrollbar(self.top_moves_frame, command=self.top_moves_text.yview)
         self.top_moves_text.config(yscrollcommand=top_moves_scroll.set)
 
         self.top_moves_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -116,6 +116,10 @@ class AnalysisPanel(tk.Frame):
             analysis: Position analysis data
             current_player: 'B' or 'W' for current player to move
         """
+        # Update header to show whose moves these are
+        player_name = "Black" if current_player == 'B' else "White"
+        self.top_moves_frame.config(text=f"{player_name}'s Best Responses")
+
         self.top_moves_text.config(state=tk.NORMAL)
         self.top_moves_text.delete(1.0, tk.END)
 
