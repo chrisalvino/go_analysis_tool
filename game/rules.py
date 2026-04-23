@@ -107,12 +107,12 @@ class GoRules:
         if self.board.get_stone(row, col) != Stone.EMPTY:
             return MoveResult(False, "Position is already occupied")
 
-        # Check for ko
-        if self.ko_point == (row, col):
-            return MoveResult(False, "Ko rule violation")
-
         # Check for captures
         captured = self.get_captured_groups(row, col, stone)
+
+        # Check for ko — only applies when recapturing exactly one stone
+        if self.ko_point == (row, col) and len(captured) == 1:
+            return MoveResult(False, "Ko rule violation")
 
         # If there are captures, the move is valid (not suicide)
         if captured:
