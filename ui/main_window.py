@@ -7,7 +7,7 @@ from typing import Optional, List
 
 from game.board import Board, Stone
 from game.rules import GoRules
-from game.game_tree import GameTree
+from game.game_tree import GameTree, GameNode
 from sgf.parser import SGFParser
 from sgf.writer import SGFWriter
 from katago.engine import KataGoEngine
@@ -58,6 +58,11 @@ class GoAnalysisTool(tk.Tk):
         # Explore mode window
         self.explore_window: Optional[ExploreWindow] = None
 
+        # Manual handicap setup mode
+        self._setup_mode = False
+        self._setup_stones_needed = 0
+        self._setup_stones_placed = []
+
         self._setup_ui()
         self._setup_menu()
         self._bind_callbacks()
@@ -88,7 +93,7 @@ class GoAnalysisTool(tk.Tk):
 
         self.mode_var = tk.StringVar(value="play")
 
-        play_radio = tk.Radiobutton(
+        self.play_radio = tk.Radiobutton(
             mode_frame,
             text="Play Mode",
             variable=self.mode_var,
@@ -96,9 +101,9 @@ class GoAnalysisTool(tk.Tk):
             command=self._set_play_mode,
             font=("Arial", 10)
         )
-        play_radio.pack(anchor=tk.W, pady=2)
+        self.play_radio.pack(anchor=tk.W, pady=2)
 
-        analysis_radio = tk.Radiobutton(
+        self.analysis_radio = tk.Radiobutton(
             mode_frame,
             text="Analysis Mode",
             variable=self.mode_var,
@@ -106,7 +111,7 @@ class GoAnalysisTool(tk.Tk):
             command=self._set_analysis_mode,
             font=("Arial", 10)
         )
-        analysis_radio.pack(anchor=tk.W, pady=2)
+        self.analysis_radio.pack(anchor=tk.W, pady=2)
 
         play_ai_radio = tk.Radiobutton(
             mode_frame,
@@ -266,33 +271,65 @@ class GoAnalysisTool(tk.Tk):
 
     def _new_game(self) -> None:
         """Create a new game."""
-        # Ask for board size
-        size = simpledialog.askinteger("New Game", "Board size:", initialvalue=19, minvalue=9, maxvalue=19)
+        if self._setup_mode:
+            self._cancel_setup_mode()
 
-        if size and size in (9, 13, 19):
-            self.board = Board(size)
-            self.rules = GoRules(self.board)
-            self.game_tree = GameTree(size)
+        from ui.new_game_dialog import NewGameDialog
+
+        dialog = NewGameDialog(self)
+        if dialog.result is None:
+            return
+
+        size = dialog.result['size']
+        handicap = dialog.result['handicap']
+        komi = dialog.result['komi']
+
+        self.board = Board(size)
+        self.rules = GoRules(self.board)
+        self.game_tree = GameTree(size)
+
+        # Set komi on root node
+        self.game_tree.root.properties['KM'] = komi
+
+        if handicap >= 2:
+            # Set HA property on root
+            self.game_tree.root.properties['HA'] = handicap
+
+            # Enter setup mode for manual handicap stone placement
+            self._setup_mode = True
+            self._setup_stones_needed = handicap
+            self._setup_stones_placed = []
+            self.current_player = Stone.BLACK  # Preview stone is black during setup
+        else:
             self.current_player = Stone.BLACK
 
-            # Clear SGF path for new game
-            self.current_sgf_path = None
+        # Clear SGF path for new game
+        self.current_sgf_path = None
 
-            # Clear any existing analysis
-            self.analysis_results = []
-            self.analysis_panel.display_errors([])
-            self.analysis_panel.display_position_analysis(None)  # Clear top 5 moves pane
-            self.board_canvas.set_top_move_candidates([])
-            self.board_canvas.set_error_moves(set())
+        # Clear any existing analysis
+        self.analysis_results = []
+        self.analysis_panel.display_errors([])
+        self.analysis_panel.display_position_analysis(None)  # Clear top 5 moves pane
+        self.board_canvas.set_top_move_candidates([])
+        self.board_canvas.set_error_moves(set())
 
-            # Update UI
-            self.board_canvas.set_board(self.board)
-            self.analysis_panel.board_size = size
-            self.analysis_panel.komi = self.game_tree.get_komi()
-            self._update_display()
+        # Update UI
+        self.board_canvas.set_board(self.board)
+        self.analysis_panel.board_size = size
+        self.analysis_panel.komi = komi
+        self._update_display()
+
+        # Activate setup mode UI after display update
+        if self._setup_mode:
+            self._set_setup_mode_ui(True)
+            self.board_canvas.set_preview_stone(Stone.BLACK)
+            self._update_setup_status()
 
     def _open_sgf(self) -> None:
         """Open an SGF file."""
+        if self._setup_mode:
+            self._cancel_setup_mode()
+
         filename = filedialog.askopenfilename(
             title="Open SGF",
             filetypes=[("SGF files", "*.sgf"), ("All files", "*.*")]
@@ -601,6 +638,10 @@ class GoAnalysisTool(tk.Tk):
             row: Row index
             col: Column index
         """
+        if self._setup_mode:
+            self._handle_setup_click(row, col)
+            return
+
         mode = self.mode_var.get()
 
         # Block clicks in Play AI mode if it's AI's turn or AI is thinking
@@ -655,6 +696,8 @@ class GoAnalysisTool(tk.Tk):
 
     def _play_pass(self) -> None:
         """Play a pass move."""
+        if self._setup_mode:
+            return
         mode = self.mode_var.get()
         if mode in ["play", "explore", "play_ai"]:
             self.game_tree.add_pass(self.current_player)
@@ -676,6 +719,8 @@ class GoAnalysisTool(tk.Tk):
 
     def _go_previous(self) -> None:
         """Go to previous move."""
+        if self._setup_mode:
+            return
         if self.game_tree.go_to_previous():
             # Check if we ended up at root (move 0)
             if self.game_tree.current.parent is None:
@@ -690,12 +735,16 @@ class GoAnalysisTool(tk.Tk):
 
     def _go_next(self) -> None:
         """Go to next move."""
+        if self._setup_mode:
+            return
         if self.game_tree.go_to_next():
             self._replay_to_current()
             self._update_display()
 
     def _go_first(self) -> None:
         """Go to first move (skip root and metadata nodes)."""
+        if self._setup_mode:
+            return
         self.game_tree.go_to_root()
         # Skip to first actual move (skip root and any metadata nodes)
         while self.game_tree.current.children:
@@ -708,6 +757,8 @@ class GoAnalysisTool(tk.Tk):
 
     def _go_last(self) -> None:
         """Go to last move."""
+        if self._setup_mode:
+            return
         while self.game_tree.go_to_next():
             pass
         self._replay_to_current()
@@ -1729,6 +1780,105 @@ class GoAnalysisTool(tk.Tk):
             "Tsumego Screenshots Complete",
             f"Saved {success_count} tsumego puzzle screenshots to:\n{tsumego_dir}/"
         )
+
+    def _handle_setup_click(self, row: int, col: int) -> None:
+        """Handle a board click during handicap setup mode.
+
+        Args:
+            row: Row index
+            col: Column index
+        """
+        stone = self.board.get_stone(row, col)
+
+        if stone == Stone.BLACK and (row, col) in self._setup_stones_placed:
+            # Undo: remove a previously placed setup stone
+            self.board.set_stone(row, col, Stone.EMPTY)
+            self._setup_stones_placed.remove((row, col))
+            self.board_canvas.redraw()
+            self._update_setup_status()
+        elif stone == Stone.EMPTY and len(self._setup_stones_placed) < self._setup_stones_needed:
+            # Place a new setup stone
+            self.board.set_stone(row, col, Stone.BLACK)
+            self._setup_stones_placed.append((row, col))
+            self.board_canvas.redraw()
+            self._update_setup_status()
+
+            # Check if all stones have been placed
+            if len(self._setup_stones_placed) == self._setup_stones_needed:
+                self._finalize_handicap_setup()
+
+    def _finalize_handicap_setup(self) -> None:
+        """Finalize manual handicap stone placement and create the game tree structure."""
+        from game.handicap import positions_to_sgf
+
+        # Create setup node (first child of root) with AB property
+        setup_node = GameNode(parent=self.game_tree.root)
+        self.game_tree.root.children.append(setup_node)
+
+        # Set AB property with SGF coordinates of placed stones
+        sgf_coords = positions_to_sgf(self._setup_stones_placed)
+        setup_node.properties['AB'] = sgf_coords
+
+        # Set current node to setup node and player to White
+        self.game_tree.current = setup_node
+        self.current_player = Stone.WHITE
+
+        # Exit setup mode
+        self._setup_mode = False
+        self._set_setup_mode_ui(False)
+        self._update_display()
+
+    def _update_setup_status(self) -> None:
+        """Update the control panel labels to show setup mode progress."""
+        placed = len(self._setup_stones_placed)
+        remaining = self._setup_stones_needed - placed
+        self.control_panel.player_label.config(
+            text=f"Place handicap stones: {remaining} remaining",
+            fg="blue"
+        )
+        self.control_panel.move_label.config(
+            text=f"Setup: {placed} / {self._setup_stones_needed} stones"
+        )
+
+    def _set_setup_mode_ui(self, enabled: bool) -> None:
+        """Enable or disable UI controls during setup mode.
+
+        Args:
+            enabled: True to enter setup mode (disable controls),
+                     False to exit setup mode (re-enable controls)
+        """
+        state = tk.DISABLED if enabled else tk.NORMAL
+
+        # Disable/enable mode radio buttons
+        self.play_radio.config(state=state)
+        self.analysis_radio.config(state=state)
+        self.play_ai_radio.config(state=state)
+        self.explore_radio.config(state=state)
+
+        # Disable/enable navigation buttons
+        self.control_panel.first_btn.config(state=state)
+        self.control_panel.prev_btn.config(state=state)
+        self.control_panel.next_btn.config(state=state)
+        self.control_panel.last_btn.config(state=state)
+        self.control_panel.pass_btn.config(state=state)
+
+        if not enabled:
+            # Re-enable controls based on actual KataGo state
+            self._update_mode_availability()
+
+    def _cancel_setup_mode(self) -> None:
+        """Cancel setup mode without creating game tree nodes."""
+        if not self._setup_mode:
+            return
+
+        # Remove any placed stones from the board
+        for row, col in self._setup_stones_placed:
+            self.board.set_stone(row, col, Stone.EMPTY)
+
+        self._setup_mode = False
+        self._setup_stones_needed = 0
+        self._setup_stones_placed = []
+        self._set_setup_mode_ui(False)
 
     def destroy(self) -> None:
         """Clean up resources."""

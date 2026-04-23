@@ -109,9 +109,9 @@ class SGFWriter:
             SGF format string
         """
         if isinstance(value, list):
-            result = ""
+            result = f"{key}"
             for v in value:
-                result += f"{key}[{SGFWriter._escape_value(str(v))}]"
+                result += f"[{SGFWriter._escape_value(str(v))}]"
             return result
         else:
             return f"{key}[{SGFWriter._escape_value(str(value))}]"
